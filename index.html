@@ -36,10 +36,8 @@
   .bar { position: fixed; z-index: 5; top: 0; left: 0; right: 0; height: var(--bar); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 var(--gut); background: var(--bg); border-bottom: 1px solid var(--line); }
   .bar a { text-decoration: none; }
   .bar .name { font: 700 20px/1 var(--cond); letter-spacing: .06em; text-transform: uppercase; }
-  .bar nav, .bar .tog { display: flex; gap: 18px; color: var(--dim); }
-  .bar nav a:hover, .bar .tog button:hover { color: var(--dev); }
-  .bar .tog button { text-transform: inherit; letter-spacing: inherit; }
-  .bar .tog b { color: var(--ink); font-weight: 400; }
+  .bar nav { display: flex; gap: 18px; color: var(--dim); }
+  .bar nav a:hover { color: var(--dev); }
 
   /* One screen per stop. The page scrolls, but each stop's content is the face of a gate: it sits at the
      gate's parked outline (--l/--t/--w/--h) and the script scales and lifts it with the gate, so a gate
@@ -162,10 +160,6 @@
 <header class="bar mono">
   <a class="name" href="#top">RisingForce</a>
   <nav><a href="#projects" id="n-proj">Projects</a><a href="#contact">Contact</a></nav>
-  <div class="tog">
-    <button id="b-snd" type="button" aria-pressed="false">Sound <b>off</b></button>
-    <button id="b-mot" type="button">Motion <b>full</b></button>
-  </div>
 </header>
 
 <main id="stops"></main>
@@ -189,12 +183,7 @@ const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const mix = (a, b, t) => a + (b - a) * t;
 const smooth = (t) => t * t * (3 - 2 * t);
 
-// Motion: "full" glides between gates; "calm" cuts. The default follows the visitor's reduced-motion
-// setting; the toggle (or ?motion=full / ?motion=calm) overrides and is remembered.
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } } };
-const mq = /[?&]motion=(full|calm)/.exec(location.search);
-if (mq) store.set("rf-motion", mq[1]);
-let calm = (store.get("rf-motion") || (matchMedia("(prefers-reduced-motion: reduce)").matches ? "calm" : "full")) === "calm";
 
 // TEMPORARY: label font chooser, only on the local preview. Press F to step through, or open with
 // ?font=3. Once one is picked, keep that row as the default and delete the rest, the key handler and
@@ -289,7 +278,7 @@ if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
   let m = null, kind = "";
   const name = (o) => (o.acronym || o.name || "?").slice(0, 16);
   const crest = (o) => o.image ? `<img src="${esc(o.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
-  const until = (ms) => { const s = Math.max(0, Math.round(ms / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), mi = Math.floor(s % 3600 / 60); return d ? `${d}d ${h}h` : h ? `${h}h ${pad(mi)}m` : `${mi}m ${pad(s % 60)}s`; };
+  const until = (ms) => { const s = Math.round(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), mi = Math.floor(s % 3600 / 60); return s <= 0 ? "a moment" : d ? `${d}d ${h}h` : h ? `${h}h ${pad(mi)}m` : `${mi}m ${pad(s % 60)}s`; };
   function paint() {
     if (!m) return;
     const [a, b] = m.opponents, sc = (o) => (m.results.find((r) => r.teamId === o.id) || { score: 0 }).score;
@@ -322,7 +311,7 @@ if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
     const pair = deck[first ? 1 : Math.floor(Math.random() * deck.length)], killer = !first && Math.random() < 1 / 3;
     $("#d-role").textContent = killer ? "YOU'RE THE KILLER" : "YOU'RE INNOCENT"; $("#d-role").className = "pill" + (killer ? " killer" : "");
     $("#d-word").textContent = killer ? pair[1] : pair[0];
-    if (!first && !calm) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+    if (!first) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
   }
   btn.addEventListener("click", () => draw(false)); draw(true);
 })();
@@ -603,9 +592,10 @@ function buildRadar() {
   svg.addEventListener("click", (e) => { const h = e.target.closest("[data-go]"); if (h) scrollTo(0, anchors[+h.dataset.go]); });
 }
 
-/* ---------- sound: off until asked for ---------- */
+/* ---------- sound: always on. Browsers only allow audio after the visitor's first click, tap or key press,
+   so it starts then. ---------- */
 const Sound = (() => {
-  let ctx, master, air, nb, on = false;
+  let ctx, master, air, nb;
   const api = {};
   const SCALE = [0, 1, 3, 5, 7, 8, 10, 12, 13, 15]; // E Phrygian, one note per gate
   function start() {
@@ -625,12 +615,13 @@ const Sound = (() => {
       g.connect(pan).connect(master);
     }
   }
-  api.toggle = () => {
-    if (!ctx) start();
-    on = !on; ctx.resume();
-    master.gain.setTargetAtTime(on ? 0.6 : 0, ctx.currentTime, 0.08);
-    $("#b-snd").innerHTML = `Sound <b>${on ? "on" : "off"}</b>`; $("#b-snd").setAttribute("aria-pressed", on);
+  const wake = () => {
+    if (!ctx) { start(); master.gain.setTargetAtTime(0.6, ctx.currentTime, 0.3); }
+    if (ctx.state === "running") for (const ev of ["pointerdown", "keydown", "touchend"]) removeEventListener(ev, wake, true);
+    else ctx.resume();
   };
+  for (const ev of ["pointerdown", "keydown", "touchend"]) addEventListener(ev, wake, true);
+  api.on = () => !!ctx && ctx.state === "running";
   api.frame = (x, speed) => {
     if (!ctx) return;
     const l = ctx.listener;
@@ -639,7 +630,7 @@ const Sound = (() => {
     air.gain.setTargetAtTime(clamp(speed / 700, 0, 1) * 0.14, ctx.currentTime, 0.1);
   };
   api.gate = () => { // a gate motor: a rising band of noise, then the stop
-    if (!ctx || !on) return;
+    if (!ctx) return;
     const t = ctx.currentTime, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
     s.buffer = nb; f.type = "bandpass"; f.Q.value = 3; f.frequency.setValueAtTime(180, t); f.frequency.exponentialRampToValueAtTime(520, t + 0.7);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.08); g.gain.setValueAtTime(0.3, t + 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.78);
@@ -649,7 +640,7 @@ const Sound = (() => {
     og.gain.setValueAtTime(0.0001, t); og.gain.setValueAtTime(0.4, t + 0.72); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
     o.connect(og).connect(master); o.start(t + 0.7); o.stop(t + 0.95);
   };
-  api.pause = (hidden) => { if (ctx) hidden ? ctx.suspend() : (on && ctx.resume()); };
+  api.pause = (hidden) => { if (ctx) hidden ? ctx.suspend() : ctx.resume(); };
   return api;
 })();
 
@@ -658,7 +649,6 @@ function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(VW() * dpr), h = Math.round(innerHeight * dpr);
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
 }
-function motionLabel() { $("#b-mot").innerHTML = `Motion <b>${calm ? "calm" : "full"}</b>`; }
 
 function boot() {
   buildQuads(); buildRadar(); lens(); measure(); resize();
@@ -675,7 +665,7 @@ function boot() {
       Sound.gate();
     }
     const before = camX(q);
-    q = calm ? target : mix(from, target, glide(clamp((now - t0) / dur, 0, 1)));
+    q = mix(from, target, glide(clamp((now - t0) / dur, 0, 1)));
     const x = camX(q);
 
     resize();
@@ -706,13 +696,10 @@ function boot() {
   };
   requestAnimationFrame(loop);
   addEventListener("resize", () => { resize(); lens(); measure(); drawn = ""; });
-  window.__rf = { anchors: () => anchors, state: () => ({ q, target, shown }) };
+  window.__rf = { anchors: () => anchors, state: () => ({ q, target, shown }), sound: Sound.on };
 }
 
-$("#b-snd").addEventListener("click", () => Sound.toggle());
-$("#b-mot").addEventListener("click", () => { calm = !calm; store.set("rf-motion", calm ? "calm" : "full"); motionLabel(); });
 document.addEventListener("visibilitychange", () => Sound.pause(document.hidden));
-motionLabel();
 
 if (gl) {
   document.fonts.load('700 100px "Barlow Condensed"').catch(() => {}).then(boot); // the floor numbers are drawn with it
