@@ -1,8 +1,10 @@
-from flask import Flask, make_response
+from flask import Flask, abort, make_response, send_from_directory
 import os
 
 # Get the directory where this script lives
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# The page loads its words from shared/ and its screenshots from media/. Only these folders are served.
+PUBLIC_DIRS = ('shared', 'media')
 
 app = Flask(__name__)
 
@@ -16,6 +18,15 @@ def index():
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
+    return response
+
+@app.route('/<folder>/<path:name>')
+def asset(folder, name):
+    if folder not in PUBLIC_DIRS:
+        abort(404)
+    response = send_from_directory(os.path.join(BASE_DIR, folder), name)
+    # the words change with the page; the screenshots can sit in the browser for an hour
+    response.headers['Cache-Control'] = 'no-cache' if folder == 'shared' else 'public, max-age=3600'
     return response
 
 if __name__ == '__main__':

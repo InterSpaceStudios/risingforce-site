@@ -1,1188 +1,723 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RisingForce — Code, Tools & Projects</title>
-<meta name="description" content="Code, programs, and tools by RisingForce. Open source developer sharing projects and creations.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RisingForce</title>
+<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker and The Killer Game.">
+<meta property="og:title" content="RisingForce">
+<meta property="og:description" content="Sites and games, built from scratch.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://risingforce.se/">
+<meta property="og:image" content="https://risingforce.se/media/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0c0c0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
---bg:#0a0d12;--bg2:#0f1419;--bg3:#151d27;--bg4:#1c2a38;
---text:#e2e8f0;--text2:#8899aa;--text3:#5a6d7e;
---accent:#0ea5e9;--accent2:#67e8f9;--accent-glow:rgba(14,165,233,0.12);
---green:#00d68f;--border:#1e2d3d;
---card-bg:#0f1720;--card-hover:#162230;
-}
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
-::selection{background:var(--accent);color:#fff}
-a{color:var(--accent2);text-decoration:none;transition:color 0.2s}
-a:hover{color:var(--accent)}
+  :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
+    --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    --gut: clamp(16px, 4vw, 56px); --bar: 42px; }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--bg); scroll-snap-type: y mandatory; scrollbar-width: none; }
+  html::-webkit-scrollbar { display: none; }
+  body { color: var(--ink); font: 400 17px/1.5 var(--body); }
+  a { color: inherit; }
+  img { display: block; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  /* every small label on the page: one face, set by --label (see LABELS in the script) */
+  .mono { font: var(--lw, 600) calc(11px * var(--lk, 1))/1.5 var(--label, "Chakra Petch"), var(--mono); text-transform: uppercase; letter-spacing: var(--ls, .06em); }
+  .mono b { font-weight: inherit !important; }
+  #gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  :focus-visible { outline: 2px solid var(--dev); outline-offset: 2px; }
 
-/* Scrollbar */
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+  .bar { position: fixed; z-index: 5; top: 0; left: 0; right: 0; height: var(--bar); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 var(--gut); background: var(--bg); border-bottom: 1px solid var(--line); }
+  .bar a { text-decoration: none; }
+  .bar .name { font: 700 20px/1 var(--cond); letter-spacing: .06em; text-transform: uppercase; }
+  .bar nav, .bar .tog { display: flex; gap: 18px; color: var(--dim); }
+  .bar nav a:hover, .bar .tog button:hover { color: var(--dev); }
+  .bar .tog button { text-transform: inherit; letter-spacing: inherit; }
+  .bar .tog b { color: var(--ink); font-weight: 400; }
 
-/* Nav */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid transparent;transition:all 0.3s}
-nav.scrolled{border-bottom-color:var(--border);background:rgba(10,10,15,0.95)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;color:var(--text);display:flex;align-items:center;gap:8px}
-.nav-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent)}
-.nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{color:var(--text2);font-size:14px;font-weight:500;letter-spacing:0.5px;transition:color 0.2s}
-.nav-links a:hover{color:var(--text)}
-.nav-links a.active{color:var(--accent2)}
+  /* One screen per stop. The page scrolls, but each stop's content is the face of a gate: it sits at the
+     gate's parked outline (--l/--t/--w/--h) and the script scales and lifts it with the gate, so a gate
+     looks the same on the move as it does parked. */
+  main { position: relative; z-index: 1; }
+  .stop { height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; }
+  .face { position: fixed; left: var(--l, 0); top: var(--t, 0); width: var(--w, 0); height: var(--h, 0); container-type: inline-size; display: none; background: var(--gate, #121314); transform-origin: 50% 50%; will-change: transform; overflow: hidden; }
+  .face.vis { display: block; }
+  .in { position: absolute; inset: 0 0 9.6% 0; background: var(--gate, #121314); padding: 6cqw 7.5cqw 3cqw; display: flex; flex-direction: column; overflow: hidden; }
+  .strip { position: absolute; left: 0; right: 0; bottom: 1.8%; height: 6%; background: repeating-linear-gradient(-45deg, var(--sa) 0 3.06cqw, var(--sb) 3.06cqw 6.12cqw); }
+  .fog { position: absolute; inset: 0; background: rgb(9, 9, 10); opacity: var(--fog, 0); pointer-events: none; }
+  .top { display: flex; justify-content: space-between; color: var(--dim); font-size: calc(clamp(9px, 2.5cqw, 13px) * var(--lk, 1)); }
+  .top b { color: var(--dev); font-weight: 500; }
+  .sm { font-size: calc(clamp(9px, 2.5cqw, 13px) * var(--lk, 1)); }
+  .btns { display: flex; flex-wrap: wrap; gap: 2.4cqw; margin-top: auto; }
+  .go { display: inline-block; padding: 2.4cqw 4.6cqw 2.7cqw; background: var(--dev); color: #0c0c0d; font: 700 4.4cqw/1 var(--cond); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+  .go:hover { background: var(--ink); }
 
-/* Cursor glow */
-.cursor-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:opacity 0.3s}
+  /* gate 0: the name, and what is behind it */
+  .t-hero .top { font-size: calc(clamp(10px, 3.1cqw, 18px) * var(--lk, 1)); color: var(--ink); }
+  .t-hero h1 { font: 700 31cqw/.8 var(--cond); text-transform: uppercase; margin: 5cqw 0 0 -.03em; }
+  .t-hero h1 span { display: block; }
+  .t-hero h1 span + span { color: var(--dev); }
+  .t-hero .tag { font: 500 5.4cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 4cqw; }
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; margin-top: auto; }
+  .chip { text-decoration: none; }
+  .chip img { width: 100%; aspect-ratio: 1.6; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px var(--line); }
+  .chip.k img { object-position: 50% 36%; }
+  .chip span { display: flex; justify-content: space-between; margin-top: 1.6cqw; font-size: clamp(9px, 2.4cqw, 13px); }
+  .chip span b { color: var(--dev); font-weight: 500; }
+  .chip:hover img { box-shadow: 0 0 0 2px var(--dev); }
+  .next { color: var(--dim); margin-top: 3.5cqw; }
 
-/* Floating code background */
-.code-bg{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
-.code-line{position:absolute;font-family:'JetBrains Mono',monospace;font-size:13px;color:rgba(14,165,233,0.07);white-space:nowrap;animation:floatCode linear infinite}
-@keyframes floatCode{0%{transform:translateY(100vh) translateX(0)}100%{transform:translateY(-100px) translateX(30px)}}
+  /* Match Tracker: its own look (near black, Geist, orange only for what is live) */
+  .t-tracker { --live: #ff5a2b; font-family: "Geist", var(--body); }
+  .t-tracker .top b { color: var(--live); }
+  .shots { position: relative; display: block; margin-top: 3cqw; }
+  .shots .desk { width: 100%; aspect-ratio: 1.85; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16); }
+  .shots .phone { position: absolute; right: 3.5cqw; top: 8cqw; width: 19cqw; aspect-ratio: .5; object-fit: cover; object-position: 50% 0; border: .7cqw solid #0a0a0a; box-shadow: 0 0 0 1px rgba(255, 255, 255, .3); border-radius: 2.2cqw; }
+  .shots:hover .desk { box-shadow: 0 0 0 2px var(--live); }
+  .livebox { margin-top: 3.2cqw; min-height: 15cqw; width: 72%; }
+  .livebox .st { display: flex; align-items: center; gap: 1.4cqw; color: var(--dim); white-space: nowrap; }
+  .livebox .st b { color: var(--live); font-weight: 500; }
+  .livebox .dot { width: 1.5cqw; height: 1.5cqw; border-radius: 50%; background: var(--live); flex: none; }
+  .match { display: flex; align-items: center; gap: 2cqw; margin-top: 1.4cqw; font: 600 5.6cqw/1.05 "Geist", var(--body); letter-spacing: -.02em; white-space: nowrap; }
+  .match img { width: 5.4cqw; height: 5.4cqw; object-fit: contain; flex: none; }
+  .match .f { color: var(--live); }
+  .match .o { color: #a1a1a1; overflow: hidden; text-overflow: ellipsis; }
+  .match .sc { font-variant-numeric: tabular-nums; }
+  .t-tracker h2 { font: 600 9cqw/1 "Geist", var(--body); letter-spacing: -.04em; margin-top: auto; }
+  .t-tracker .blurb { color: #a1a1a1; font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.4; margin: 1.6cqw 0 3.4cqw; }
+  .t-tracker .btns { margin-top: 0; }
+  .t-tracker .go { background: #ededed; color: #0a0a0a; font: 600 3.4cqw/1 "Geist", var(--body); letter-spacing: 0; text-transform: none; border-radius: 99cqw; padding: 2.6cqw 4.6cqw; }
+  .t-tracker .go:hover { background: var(--live); }
 
-/* Particle canvas */
-#particle-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+  /* The Killer Game: its own look (purple, yellow, chunky) */
+  .t-killer { --p: #6c2bd9; --y: #ffd23f; --edge: #3b138f; font-family: "Nunito", var(--body); font-weight: 800;
+    background-image: radial-gradient(rgba(255, 255, 255, .13) 1.1cqw, transparent 1.2cqw); background-size: 6.2cqw 6.2cqw; background-color: var(--gate, #6c2bd9); }
+  .t-killer .top { color: rgba(255, 255, 255, .75); }
+  .t-killer .top b { color: var(--y); }
+  .phones { display: flex; justify-content: center; align-items: center; gap: 2.4cqw; margin-top: 5cqw; }
+  .ph { width: 23cqw; aspect-ratio: .5; object-fit: cover; border-radius: 3.4cqw; box-shadow: 0 1.1cqw 0 var(--edge); }
+  .ph.a { transform: rotate(-5deg); }
+  .ph.b { transform: rotate(3deg) translateY(-1.5cqw); }
+  .deal { width: 31cqw; aspect-ratio: .62; border-radius: 3.4cqw; box-shadow: 0 1.1cqw 0 var(--edge), 0 0 0 .7cqw var(--y); background: var(--p); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3cqw; padding: 2cqw; transform: rotate(4deg); font-family: "Lilita One", var(--cond); font-weight: 400; }
+  .deal .bubble { width: 100%; background: #fff; border-radius: 3cqw; box-shadow: 0 .8cqw 0 var(--edge); padding: 3.4cqw 1cqw 3cqw; text-align: center; }
+  .deal .pill { display: inline-block; padding: .7cqw 1.8cqw .9cqw; border-radius: 9cqw; color: #fff; font-size: 2.5cqw; letter-spacing: .02em; transform: rotate(-3deg); background: #1db95f; white-space: nowrap; }
+  .deal .pill.killer { background: #ff3b5c; }
+  .deal .w { display: block; color: var(--edge); font-size: 6cqw; line-height: 1.1; margin-top: 1.6cqw; }
+  .deal .wl { display: block; color: #8a6ad6; font: 800 2cqw/1 "Nunito", sans-serif; margin-top: .8cqw; }
+  .deal .tap { background: var(--y); color: var(--edge); border-radius: 9cqw; box-shadow: 0 .7cqw 0 var(--edge); padding: 1.3cqw 3.4cqw 1.5cqw; font-size: 3.2cqw; }
+  .deal:hover .tap { background: #fff; }
+  .deal.pop .bubble { animation: pop .16s ease-out; }
+  @keyframes pop { from { transform: scale(.86); } to { transform: none; } }
+  .klogo { font: 400 21cqw/.9 "Lilita One", var(--cond); color: var(--y); text-shadow: 0 1.1cqw 0 var(--edge); transform: rotate(-3deg); transform-origin: 0 100%; margin-top: auto; }
+  .t-killer .blurb { color: #fff; font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.35; margin: 2.6cqw 0 3.6cqw; }
+  .t-killer .btns { margin-top: 0; }
+  .kbtn { display: inline-block; padding: 2.2cqw 5.4cqw 2.5cqw; border-radius: 4cqw; background: var(--y); color: var(--edge); box-shadow: 0 1cqw 0 var(--edge); font: 400 4.6cqw/1 "Lilita One", var(--cond); text-decoration: none; }
+  .kbtn.w { background: #fff; color: var(--p); }
+  .kbtn:hover { transform: translateY(.4cqw); box-shadow: 0 .6cqw 0 var(--edge); }
 
-/* Hero */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,var(--accent-glow) 0%,transparent 50%);animation:heroGlow 8s ease-in-out infinite alternate}
-@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
-.hero-content{max-width:800px;text-align:center;position:relative;z-index:1}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:24px;background:var(--bg3);border:1px solid var(--border);font-size:13px;color:var(--text2);margin-bottom:32px;font-family:'JetBrains Mono',monospace}
-.hero-badge .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,214,143,0.4)}50%{opacity:0.8;box-shadow:0 0 0 8px rgba(0,214,143,0)}}
-.hero h1{font-size:clamp(40px,7vw,72px);font-weight:800;line-height:1.1;margin-bottom:20px;background:linear-gradient(135deg,var(--text) 0%,var(--accent2) 40%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:'JetBrains Mono',monospace}
-.terminal-cursor{animation:blink 1.2s infinite;color:var(--accent2)}
-@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-.hero p{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:600px;margin:0 auto 40px;line-height:1.7}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.25s;border:none;font-family:inherit}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(14,165,233,0.3)}
-.btn-primary:hover{background:#38bdf8;transform:translateY(-2px);box-shadow:0 6px 30px rgba(14,165,233,0.4);color:#fff}
-.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
-.btn-secondary:hover{background:var(--bg4);border-color:var(--accent);transform:translateY(-2px);color:var(--text)}
-.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px}
-.stat{text-align:center}
-.stat-num{font-size:28px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
-.stat-label{font-size:13px;color:var(--text2);margin-top:4px}
+  /* any other project: plain */
+  .t-plain h2, .t-contact h2 { font: 700 16.5cqw/.86 var(--cond); text-transform: uppercase; margin-top: auto; overflow-wrap: anywhere; }
+  .t-plain .blurb { font-size: clamp(14px, 4.4cqw, 26px); line-height: 1.4; margin: 3.5cqw 0 5cqw; }
+  .t-plain .btns { margin-top: 0; }
 
-/* Sections */
-section{padding:100px 24px}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-header{text-align:center;margin-bottom:60px}
-.section-tag{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-.section-title{font-size:clamp(28px,4vw,42px);font-weight:700;margin-bottom:16px}
-.section-desc{color:var(--text2);max-width:600px;margin:0 auto;font-size:16px}
+  /* last gate: contact as big tiles */
+  .t-contact h2 { margin-top: 3.5cqw; }
+  .tiles { display: grid; gap: 2.4cqw; margin: 5cqw 0 3cqw; }
+  .tile { display: flex; align-items: center; gap: 4.5cqw; padding: 3.6cqw 4cqw; box-shadow: inset 0 0 0 1px var(--line); text-decoration: none; text-align: left; }
+  .tile svg { width: 12cqw; height: 12cqw; flex: none; }
+  .tile .v { font: 700 10cqw/1 var(--cond); letter-spacing: .02em; text-transform: uppercase; }
+  .tile .a { margin-left: auto; color: var(--dim); }
+  .tile:hover { box-shadow: inset 0 0 0 2px var(--dev); }
+  .tile:hover .a { color: var(--dev); }
+  .fine { margin-top: auto; color: var(--dim); font-size: clamp(8px, 2.1cqw, 11px); }
+  .fine a:hover { color: var(--dev); }
 
-/* Projects */
-.project-controls{display:flex;justify-content:center;align-items:center;gap:24px;margin-bottom:48px;flex-wrap:wrap}
-.project-filters{display:flex;gap:12px}
-.filter-btn{padding:8px 24px;border-radius:24px;font-size:14px;font-weight:600;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.3s;font-family:'JetBrains Mono',monospace}
-.filter-btn:hover{border-color:var(--accent);color:var(--text)}
-.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.sort-control{display:flex;align-items:center;gap:8px}
-.sort-control label{font-size:13px;color:var(--text2);font-family:'JetBrains Mono',monospace}
-.sort-select{padding:8px 16px;border-radius:12px;font-size:13px;font-weight:500;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-family:'JetBrains Mono',monospace;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238899aa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;min-width:160px}
-.sort-select:hover{border-color:var(--accent)}
-.sort-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,165,233,0.2)}
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:24px}
-.project-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s,transform 0.3s;cursor:pointer;position:relative;transform-style:preserve-3d;perspective:1000px}
-.project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 40px rgba(14,165,233,0.1)}
-.project-card.filtered-out{display:none}
-.project-thumb{height:200px;background:var(--bg3);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.project-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,0.05) 0%,transparent 60%);transition:opacity 0.3s}
-.project-card:hover .project-thumb::after{opacity:0}
-.project-thumb img{width:100%;height:100%;object-fit:cover}
-.project-thumb .placeholder{font-size:64px;filter:grayscale(0.3);transition:all 0.3s}
-.project-card:hover .project-thumb .placeholder{filter:grayscale(0);transform:scale(1.15)}
-.project-badge{position:absolute;top:12px;right:12px;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
-.badge-game{background:rgba(14,165,233,0.15);color:var(--accent2);border:1px solid rgba(14,165,233,0.3)}
-.badge-tool{background:rgba(0,214,143,0.15);color:var(--green);border:1px solid rgba(0,214,143,0.3)}
-.badge-web{background:rgba(253,203,110,0.15);color:#fdcb6e;border:1px solid rgba(253,203,110,0.3)}
-.project-info{padding:20px}
-.project-name{font-size:18px;font-weight:600;margin-bottom:8px}
-.project-desc{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px}
-.project-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.project-tags span{padding:3px 10px;border-radius:6px;font-size:11px;background:var(--bg3);color:var(--text2);font-family:'JetBrains Mono',monospace}
-.project-actions{display:flex;gap:10px}
-.project-actions .btn{padding:8px 18px;font-size:13px;border-radius:8px}
+  #radar { position: fixed; z-index: 4; right: var(--gut); bottom: 18px; width: 300px; background: var(--bg); border: 1px solid var(--line); padding: 8px 10px 10px; }
+  #radar .where { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; color: var(--dim); white-space: nowrap; overflow: hidden; }
+  #radar .where b { color: var(--ink); font-weight: 400; }
+  #radar svg { display: block; width: 100%; height: auto; color: var(--ink); }
+  #radar .hit { fill: transparent; cursor: pointer; }
+  #radar .hit:hover { fill: rgba(232, 121, 43, .4); }
 
-/* About */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.about-text h3{font-size:24px;font-weight:600;margin-bottom:16px}
-.about-text p{color:var(--text2);margin-bottom:16px;font-size:15px}
-.about-tech{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
-.tech-pill{padding:6px 16px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);font-size:13px;color:var(--text2);font-family:'JetBrains Mono',monospace;transition:all 0.2s}
-.tech-pill:hover{border-color:var(--accent);color:var(--accent2)}
-.about-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:40px;position:relative;overflow:hidden}
-.about-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.about-links{display:flex;flex-direction:column;gap:16px;margin-top:24px}
-.about-link{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);transition:all 0.2s;color:var(--text)}
-.about-link:hover{border-color:var(--accent);background:var(--bg3);color:var(--text)}
-.about-link-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--bg4)}
-
-/* Skills Progress */
-.skills-section{margin-top:48px}
-.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:768px){.skills-grid{grid-template-columns:1fr}}
-.skill-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;transition:all 0.3s}
-.skill-item:hover{border-color:var(--accent);transform:translateX(4px)}
-.skill-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0}
-.skill-info{flex:1;min-width:0}
-.skill-name{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.skill-pct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent2)}
-.skill-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;position:relative}
-.skill-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width 1.5s cubic-bezier(0.22,1,0.36,1)}
-.skill-fill.animated{width:var(--target)}
-.skill-fill::after{content:'';position:absolute;top:0;right:0;width:30px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15));border-radius:3px}
-
-/* GitHub Graph */
-.github-graph{margin-top:48px}
-.graph-container{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;overflow-x:auto}
-.graph-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.graph-label .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
-.graph-grid{display:flex;gap:3px}
-.graph-week{display:flex;flex-direction:column;gap:3px}
-.graph-cell{width:12px;height:12px;border-radius:3px;background:var(--bg3);transition:all 0.2s}
-.graph-cell:hover{transform:scale(1.4);box-shadow:0 0 8px rgba(14,165,233,0.3)}
-.graph-cell.l1{background:rgba(14,165,233,0.2)}
-.graph-cell.l2{background:rgba(14,165,233,0.4)}
-.graph-cell.l3{background:rgba(14,165,233,0.6)}
-.graph-cell.l4{background:var(--accent)}
-.graph-legend{display:flex;align-items:center;gap:6px;margin-top:12px;justify-content:flex-end}
-.graph-legend span{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-
-/* Contact */
-#contact{background:var(--bg2)}
-.contact-box{max-width:600px;margin:0 auto;text-align:center}
-.contact-email{font-family:'JetBrains Mono',monospace;font-size:clamp(16px,2.5vw,22px);color:var(--accent2);padding:20px;background:var(--bg);border:1px solid var(--border);border-radius:12px;display:block;margin-top:24px;transition:all 0.2s;cursor:pointer}
-.contact-email:hover{border-color:var(--accent);background:var(--bg3);color:var(--accent)}
-
-/* Footer */
-footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
-footer p{color:var(--text2);font-size:13px}
-footer a{color:var(--accent2)}
-
-/* Mobile */
-@media(max-width:768px){
-.nav-links{gap:20px}
-.nav-links a{font-size:13px}
-.hero-stats{gap:24px}
-.projects-grid{grid-template-columns:1fr}
-.about-grid{grid-template-columns:1fr;gap:32px}
-.hero-btns{flex-direction:column;align-items:center}
-}
-@media(max-width:480px){
-.nav-links{display:none}
-nav{padding:12px 0}
-section{padding:60px 16px}
-}
-
-/* Project Preview Modal */
-.preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 0.3s}
-.preview-overlay.active{display:flex;opacity:1}
-.preview-modal{width:100%;max-width:1100px;height:85vh;background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
-.preview-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
-.preview-title{font-weight:600;font-size:16px;display:flex;align-items:center;gap:10px}
-.preview-title .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-.preview-close{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-.preview-close:hover{background:var(--bg4);color:var(--text);border-color:var(--accent)}
-.preview-iframe{flex:1;border:none;background:#fff}
-
-/* Beliefs */
-.beliefs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:48px}
-.belief-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;transition:all 0.3s}
-.belief-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,0.08)}
-.belief-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.3s}
-.belief-card:hover::before{opacity:1}
-.belief-icon{font-size:32px;margin-bottom:16px;display:block}
-.belief-card h3{font-size:18px;font-weight:600;margin-bottom:10px}
-.belief-card p{color:var(--text2);font-size:14px;line-height:1.7}
-.belief-quote{max-width:700px;margin:0 auto;text-align:center;padding:40px;font-size:clamp(18px,2.5vw,24px);color:var(--text);font-style:italic;line-height:1.7;position:relative}
-.belief-quote::before,.belief-quote::after{content:'"';font-size:48px;color:var(--accent);font-family:Georgia,serif;line-height:1;position:absolute}
-.belief-quote::before{top:0;left:0}
-.belief-quote::after{bottom:0;right:0;content:'"'}
-
-/* Back to top */
-.back-to-top{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:var(--accent);border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;z-index:50;transform:translateY(100px);opacity:0;transition:all 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(14,165,233,0.4)}
-.back-to-top.visible{transform:translateY(0);opacity:1}
-.back-to-top:hover{transform:translateY(-2px) scale(1.1);box-shadow:0 6px 30px rgba(14,165,233,0.5)}
-
-/* Animations */
-.fade-in{opacity:0;transform:translateY(20px);transition:opacity 0.6s,transform 0.6s}
-.fade-in.visible{opacity:1;transform:translateY(0)}
+  /* no WebGL2: the same faces as a plain page */
+  body.no3d #gl, body.no3d #radar { display: none; }
+  html:has(body.no3d) { scroll-snap-type: none; }
+  body.no3d .stop { height: auto; padding: calc(var(--bar) + 24px) var(--gut) 24px; }
+  body.no3d .face { display: block; position: relative; left: auto; top: auto; width: min(560px, 100%); height: auto; aspect-ratio: .74; margin: 0 auto; }
+  body.no3d .fog { display: none; }
+  body.no3d .in { inset: 0; }
+  #fontpick { position: fixed; z-index: 4; left: var(--gut); bottom: 18px; padding: 6px 10px; background: var(--bg); border: 1px solid var(--line); color: var(--dim); font: 12px/1.4 system-ui, sans-serif; }
+  @media (max-width: 860px) { .bar nav, #radar, #fontpick { display: none; } }
 </style>
 </head>
 <body>
+<canvas id="gl" aria-hidden="true"></canvas>
 
-<nav id="navbar">
-<div class="nav-inner">
-<div class="nav-logo"><span class="dot"></span> RisingForce</div>
-<ul class="nav-links">
-<li><a href="#home" class="active">Home</a></li>
-<li><a href="#projects">Projects</a></li>
-<li><a href="#about">About</a></li>
-<li><a href="#beliefs">Beliefs</a></li>
-<li><a href="#contact">Contact</a></li>
-</ul>
-</div>
-</nav>
+<header class="bar mono">
+  <a class="name" href="#top">RisingForce</a>
+  <nav><a href="#projects" id="n-proj">Projects</a><a href="#contact">Contact</a></nav>
+  <div class="tog">
+    <button id="b-snd" type="button" aria-pressed="false">Sound <b>off</b></button>
+    <button id="b-mot" type="button">Motion <b>full</b></button>
+  </div>
+</header>
 
-<canvas id="particle-canvas"></canvas>
-<div class="cursor-glow" id="cursor-glow"></div>
+<main id="stops"></main>
 
-<section class="hero" id="home">
-<div class="code-bg" id="code-bg"></div>
-<div class="hero-content">
-<div class="hero-badge"><span class="pulse"></span> Open Source Developer</div>
-<h1 id="terminal-text">$ <span class="terminal-cursor">|</span></h1>
-<p>I'm RisingForce — I create games, tools, and programs. Everything I build, I share. Check out my projects below.</p>
-<div class="hero-btns">
-<a href="#projects" class="btn btn-primary">⚡ View Projects</a>
-<a href="https://github.com/risingforce" target="_blank" class="btn btn-secondary">GitHub →</a>
-</div>
-<div class="hero-stats">
-<div class="stat"><div class="stat-num" id="project-count">0</div><div class="stat-label">Projects</div></div>
-<div class="stat"><div class="stat-num" id="unique-visitors">—</div><div class="stat-label">Unique Visitors</div></div>
-<div class="stat"><div class="stat-num" id="total-views">—</div><div class="stat-label">Page Views</div></div>
-<div class="stat"><div class="stat-num">🇸🇪</div><div class="stat-label">Sweden</div></div>
-</div>
-</div>
-</section>
-
-<section id="projects">
-<div class="section-inner">
-<div class="section-header fade-in">
-<div class="section-tag">// Projects</div>
-<h2 class="section-title">What I've Built</h2>
-<p class="section-desc">Games, tools, and experiments. Click to try demos or download the source.</p>
-</div>
-<div class="project-controls fade-in">
-<div class="project-filters">
-<button class="filter-btn active" data-filter="all">All</button>
-<button class="filter-btn" data-filter="game">Games</button>
-<button class="filter-btn" data-filter="tool">Tools</button>
-</div>
-<div class="sort-control">
-<label>Sort:</label>
-<select class="sort-select" id="sort-select">
-<option value="newest">Newest First</option>
-<option value="oldest">Oldest First</option>
-<option value="az">A → Z</option>
-<option value="za">Z → A</option>
-<option value="popular">Most Popular</option>
-</select>
-</div>
-</div>
-<div class="projects-grid" id="projects-grid"></div>
-</div>
-</section>
-
-<section id="about">
-<div class="section-inner">
-<div class="section-header fade-in">
-<div class="section-tag">// About</div>
-<h2 class="section-title">Who I Am</h2>
-</div>
-<div class="about-grid">
-<div class="about-text fade-in">
-<h3>Hey, I'm RisingForce 👋</h3>
-<p>I'm a developer from Sweden who loves building things — from browser games to desktop tools. I believe in open source and sharing what you create.</p>
-<p>Most of my projects are single-file HTML/JS apps that run right in your browser. No installs, no dependencies, just open and play.</p>
-<div class="about-tech">
-<span class="tech-pill">JavaScript</span>
-<span class="tech-pill">TypeScript</span>
-<span class="tech-pill">HTML/CSS</span>
-<span class="tech-pill">Three.js</span>
-<span class="tech-pill">Python</span>
-<span class="tech-pill">Node.js</span>
-<span class="tech-pill">C#</span>
-<span class="tech-pill">Java</span>
-<span class="tech-pill">Lua</span>
-<span class="tech-pill">React</span>
-<span class="tech-pill">WebGL</span>
-<span class="tech-pill">Game Dev</span>
-<span class="tech-pill">Git</span>
-</div>
-<div class="skills-section">
-<div class="skills-grid" id="skills-grid"></div>
-</div>
-</div>
-<div class="about-card fade-in">
-<h3 style="margin-bottom:8px">Connect</h3>
-<p style="color:var(--text2);font-size:14px;margin-bottom:16px">Find me on these platforms</p>
-<div class="about-links">
-<a href="https://github.com/risingforce" target="_blank" class="about-link">
-<div class="about-link-icon">🐙</div>
-<div><div style="font-weight:600;font-size:14px">GitHub</div><div style="font-size:12px;color:var(--text2)">github.com/risingforce</div></div>
-</a>
-<a href="https://discord.com/users/risingforce1337" class="about-link">
-<div class="about-link-icon">💬</div>
-<div><div style="font-weight:600;font-size:14px">Discord</div><div style="font-size:12px;color:var(--text2)">risingforce1337</div></div>
-</a>
-<a href="mailto:risingforcebg@icloud.com" class="about-link">
-<div class="about-link-icon">✉️</div>
-<div><div style="font-weight:600;font-size:14px">Email</div><div style="font-size:12px;color:var(--text2)">risingforcebg@icloud.com</div></div>
-</a>
-</div>
-</div>
-</div>
-<div class="github-graph fade-in">
-<div class="graph-container">
-<div class="graph-label"><span class="live-dot"></span> Contribution Activity — Last 6 Months</div>
-<div class="graph-grid" id="github-grid"></div>
-<div class="graph-legend">
-<span>Less</span>
-<div class="graph-cell"></div>
-<div class="graph-cell l1"></div>
-<div class="graph-cell l2"></div>
-<div class="graph-cell l3"></div>
-<div class="graph-cell l4"></div>
-<span>More</span>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<section id="beliefs">
-<div class="section-inner">
-<div class="section-header fade-in">
-<div class="section-tag">// What I Believe In</div>
-<h2 class="section-title">Open Source Everything</h2>
-<p class="section-desc">Code should be free. Knowledge should be shared. That's the whole point.</p>
-</div>
-<div class="beliefs-grid">
-<div class="belief-card fade-in">
-<span class="belief-icon">🔓</span>
-<h3>Code Should Be Free</h3>
-<p>Every project I build is open source. No paywalls, no locked features, no "premium tiers." If you can use it, you can see how it works.</p>
-</div>
-<div class="belief-card fade-in">
-<span class="belief-icon">🤝</span>
-<h3>Share What You Know</h3>
-<p>I learned to code from other people sharing their work for free. The least I can do is pass it on. Every line of code I write is a thank you to everyone who came before me.</p>
-</div>
-<div class="belief-card fade-in">
-<span class="belief-icon">🛠️</span>
-<h3>Build for Everyone</h3>
-<p>No installs, no sign-ups, no accounts. My projects run in your browser — open the file and it just works. Software should be accessible to everyone.</p>
-</div>
-<div class="belief-card fade-in">
-<span class="belief-icon">🌍</span>
-<h3>Community Over Competition</h3>
-<p>Open source isn't about being the best — it's about making things better together. Fork my code, improve it, make it yours. That's the whole point.</p>
-</div>
-</div>
-</div>
-</section>
-
-<!-- Project Preview Modal -->
-<div class="preview-overlay" id="preview-overlay">
-<div class="preview-modal">
-<div class="preview-header">
-<div class="preview-title"><span class="dot"></span> <span id="preview-name">Project</span></div>
-<button class="preview-close" id="preview-close">✕</button>
-</div>
-<iframe class="preview-iframe" id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
-</div>
+<div id="radar">
+  <div class="where mono"><b id="r-where">Entrance</b><span id="r-n"></span></div>
+  <svg id="r-svg" role="img" aria-label="Map of the page: click a gate to jump there"></svg>
 </div>
 
-<section id="contact">
-<div class="section-inner">
-<div class="contact-box fade-in">
-<div class="section-tag">// Contact</div>
-<h2 class="section-title">Get In Touch</h2>
-<p class="section-desc">Got a question, idea, or just want to say hi? Shoot me an email.</p>
-<a href="mailto:risingforcebg@icloud.com" class="contact-email">risingforcebg@icloud.com</a>
-</div>
-</div>
-</section>
+<div id="fontpick"></div>
 
-<footer>
-<p>© 2026 RisingForce. Built with ❤️ in Sweden.</p>
-</footer>
-
-<button class="back-to-top" id="back-to-top" title="Back to top">↑</button>
-
+<script src="shared/content.js"></script>
 <script>
-// Project data — RF branded projects
-// ===== SOUND EFFECTS =====
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
-function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+(() => {
+"use strict";
+const RF = window.RF;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const mix = (a, b, t) => a + (b - a) * t;
+const smooth = (t) => t * t * (3 - 2 * t);
 
-function playSound(type) {
-  initAudio();
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  
-  if (type === 'click') {
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-    osc.start(now);
-    osc.stop(now + 0.1);
-  } else if (type === 'filter') {
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(400, now);
-    osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    osc.start(now);
-    osc.stop(now + 0.15);
-  } else if (type === 'sort') {
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(300, now);
-    osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
-    osc.frequency.exponentialRampToValueAtTime(900, now + 0.2);
-    gain.gain.setValueAtTime(0.06, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-    osc.start(now);
-    osc.stop(now + 0.2);
-  } else if (type === 'hover') {
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1200, now);
-    gain.gain.setValueAtTime(0.03, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-    osc.start(now);
-    osc.stop(now + 0.05);
+// Motion: "full" glides between gates; "calm" cuts. The default follows the visitor's reduced-motion
+// setting; the toggle (or ?motion=full / ?motion=calm) overrides and is remembered.
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } } };
+const mq = /[?&]motion=(full|calm)/.exec(location.search);
+if (mq) store.set("rf-motion", mq[1]);
+let calm = (store.get("rf-motion") || (matchMedia("(prefers-reduced-motion: reduce)").matches ? "calm" : "full")) === "calm";
+
+// TEMPORARY: label font chooser, only on the local preview. Press F to step through, or open with
+// ?font=3. Once one is picked, keep that row as the default and delete the rest, the key handler and
+// #fontpick. The published site always uses the first row.
+const LABELS = [["Chakra Petch", 600, 1.06, ".06em"], ["Rajdhani", 700, 1.18, ".08em"], ["Barlow Condensed", 600, 1.24, ".08em"], ["Unbounded", 500, 0.86, ".04em"], ["Silkscreen", 400, 0.96, ".02em"]];
+const LOCAL = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+let labelAt = LOCAL ? clamp(+((/[?&]font=(\d)/.exec(location.search) || [])[1] || store.get("rf-font") || 1), 1, LABELS.length) - 1 : 0;
+function setLabel() {
+  const [fam, w, k, ls] = LABELS[labelAt], r = document.documentElement.style;
+  r.setProperty("--label", `"${fam}"`); r.setProperty("--lw", w); r.setProperty("--lk", k); r.setProperty("--ls", ls);
+  if (!LOCAL) return;
+  $("#fontpick").textContent = `Label font ${labelAt + 1}/${LABELS.length}: ${fam}. Press F for the next one.`;
+  store.set("rf-font", labelAt + 1);
+}
+if (LOCAL) addEventListener("keydown", (e) => { if (e.key.toLowerCase() === "f" && !e.ctrlKey && !e.metaKey && !e.altKey) { labelAt = (labelAt + 1) % LABELS.length; setLabel(); } });
+else $("#fontpick").remove();
+setLabel();
+
+/* ---------- the page: one stop per gate. Gate 0 is the front door, the last one is contact. ---------- */
+const N = RF.projects.length, NS = N + 2;
+const top = (a, b) => `<div class="top mono"><span>${a}</span><b>${b}</b></div>`;
+const faceOf = {
+  tracker: (p, i) => `<div class="in t-tracker">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <a class="shots" href="${esc(p.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(p.title)}">
+      <img class="desk" src="${esc(p.shots.desk)}" alt="${esc(p.title)} on a desktop: a live scoreboard and the day's schedule">
+      <img class="phone" src="${esc(p.shots.phone)}" alt="${esc(p.title)} on a phone">
+    </a>
+    <div class="livebox" id="livebox" data-api="${esc(p.api)}"></div>
+    <h2>${esc(p.title)}</h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns"><a class="go" href="${esc(p.url)}" target="_blank" rel="noopener">Open the tracker &nearr;</a></div>
+  </div>`,
+  killer: (p, i) => `<div class="in t-killer">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <div class="phones">
+      <img class="ph a" src="${esc(p.shots.home)}" alt="${esc(p.title)}: the home screen">
+      <img class="ph b" src="${esc(p.shots.hold)}" alt="${esc(p.title)}: hold to reveal your role">
+      <button class="deal" id="deal" type="button" aria-label="Deal a new role">
+        <span class="bubble"><span class="pill" id="d-role"></span><span class="w" id="d-word"></span><span class="wl">YOUR WORD</span></span>
+        <span class="tap">DEAL AGAIN</span>
+      </button>
+    </div>
+    <h2 class="klogo">KILLER!</h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns"><a class="kbtn" href="${esc(p.url)}" target="_blank" rel="noopener">PLAY IT</a>${p.repo ? `<a class="kbtn w" href="${esc(p.repo)}" target="_blank" rel="noopener">GITHUB</a>` : ""}</div>
+  </div>`,
+  plain: (p, i) => `<div class="in t-plain">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <h2>${esc(p.title)}</h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns">${p.url ? `<a class="go" href="${esc(p.url)}" target="_blank" rel="noopener">Visit &nearr;</a>` : ""}</div>
+  </div>`,
+};
+// brand marks, the same ones the Killer Game's credits use
+const ICON = {
+  github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ece8df" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+  discord: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5865F2" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>',
+  email: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ece8df" d="M2 4h20v16H2zm2.4 2 7.6 6.2L19.6 6zM4 7.6V18h16V7.6l-8 6.5z"/></svg>',
+};
+const themeOf = (k) => k === 0 ? "hero" : k > N ? "contact" : (faceOf[RF.projects[k - 1].theme] ? RF.projects[k - 1].theme : "plain");
+const half = Math.ceil(RF.name.length / 2);
+$("#stops").innerHTML = `
+  <section class="stop" id="top"><div class="face"><div class="in t-hero">
+    ${top(esc(RF.domain), esc(RF.place))}
+    <h1 aria-label="${esc(RF.name)}"><span>${esc(RF.name.slice(0, half))}</span><span>${esc(RF.name.slice(half))}</span></h1>
+    <p class="tag">${esc(RF.tagline)}</p>
+    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${p.theme === "killer" ? "k" : ""}" href="#${esc(p.id)}">
+      <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>
+    <div class="next mono sm">Scroll: the gate lifts &darr;</div>
+  </div></div></section>` +
+  RF.projects.map((p, i) => `<section class="stop" id="${esc(p.id)}"><article class="face">${faceOf[themeOf(i + 1)](p, i)}</article></section>`).join("") + `
+  <section class="stop" id="contact"><div class="face"><div class="in t-contact">
+    ${top("Contact", `${pad(RF.contact.length)} ways`)}
+    <h2>Contact</h2>
+    <div class="tiles">${RF.contact.map((c) => {
+      const inner = `${ICON[c.label.toLowerCase()] || ""}<span class="v">${esc(c.label)}</span><span class="a mono sm">${c.copy ? "Copy name" : "&nearr;"}</span>`;
+      return c.copy ? `<button class="tile" type="button" data-copy="${esc(c.copy)}">${inner}</button>`
+        : `<a class="tile" href="${esc(c.url)}"${/^mailto:/.test(c.url) ? "" : ' target="_blank" rel="noopener"'}>${inner}</a>`;
+    }).join("")}</div>
+    <p class="fine mono">&copy; 2026 RisingForce / the hall behind this page is rendered live in your browser, no libraries</p>
+  </div></div></section>`;
+const stops = [...document.querySelectorAll(".stop")], faces = stops.map((s) => s.querySelector(".face"));
+const gateName = (k) => k === 0 ? "Entrance" : k > N ? "Contact" : `Gate ${pad(k)} / ${RF.projects[k - 1].title}`;
+if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
+
+/* ---------- gate widgets ---------- */
+// Match Tracker: what the real tracker is showing right now, from its own API.
+(function live() {
+  const box = $("#livebox"); if (!box) return;
+  let m = null, kind = "";
+  const name = (o) => (o.acronym || o.name || "?").slice(0, 16);
+  const crest = (o) => o.image ? `<img src="${esc(o.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+  const until = (ms) => { const s = Math.max(0, Math.round(ms / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), mi = Math.floor(s % 3600 / 60); return d ? `${d}d ${h}h` : h ? `${h}h ${pad(mi)}m` : `${mi}m ${pad(s % 60)}s`; };
+  function paint() {
+    if (!m) return;
+    const [a, b] = m.opponents, sc = (o) => (m.results.find((r) => r.teamId === o.id) || { score: 0 }).score;
+    const head = kind === "live" ? `<i class="dot"></i><b>Live right now</b>` : kind === "next" ? `<span>Next up in</span><b>${until(Date.parse(m.scheduledAt) - Date.now())}</b>` : `<span>Last result</span>`;
+    const mid = kind === "next" ? "v" : `${sc(a)} : ${sc(b)}`;
+    box.innerHTML = `<div class="st mono sm">${head}<span>/ ${esc(m.event || "")}</span></div>
+      <div class="match">${crest(a)}<span class="${a.followed ? "f" : "o"}">${esc(name(a))}</span><span class="sc">${mid}</span><span class="${b.followed ? "f" : "o"}">${esc(name(b))}</span>${crest(b)}</div>`;
+  }
+  async function load() {
+    try {
+      const j = await (await fetch(box.dataset.api, { cache: "no-store" })).json();
+      const mine = j.matches.filter((x) => x.opponents && x.opponents.length === 2 && x.opponents.some((o) => o.followed));
+      const first = (j.followed && j.followed.names || [])[0] || "";
+      const top1 = (x) => x.opponents.some((o) => o.followed && (o.name || "").toLowerCase() === first) ? 0 : 1; // the headline team first
+      const liveM = mine.filter((x) => x.live).sort((x, y) => top1(x) - top1(y))[0];
+      const nextM = mine.filter((x) => x.status === "not_started").sort((x, y) => Date.parse(x.scheduledAt) - Date.parse(y.scheduledAt))[0];
+      const lastM = mine.filter((x) => x.finished).sort((x, y) => Date.parse(y.endAt || y.beginAt) - Date.parse(x.endAt || x.beginAt))[0];
+      m = liveM || nextM || lastM || null; kind = liveM ? "live" : nextM ? "next" : "last";
+      paint();
+    } catch (e) { /* the gate still has the screenshot */ }
+  }
+  load(); setInterval(() => { if (!document.hidden) load(); }, 90000);
+  setInterval(() => { if (kind === "next" && !document.hidden) paint(); }, 1000);
+})();
+// The Killer Game: deal yourself a role from real words in the bank. One in three is the killer.
+(function deal() {
+  const btn = $("#deal"); if (!btn) return;
+  const deck = RF.projects.find((p) => p.theme === "killer").deck;
+  function draw(first) {
+    const pair = deck[first ? 1 : Math.floor(Math.random() * deck.length)], killer = !first && Math.random() < 1 / 3;
+    $("#d-role").textContent = killer ? "YOU'RE THE KILLER" : "YOU'RE INNOCENT"; $("#d-role").className = "pill" + (killer ? " killer" : "");
+    $("#d-word").textContent = killer ? pair[1] : pair[0];
+    if (!first && !calm) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+  }
+  btn.addEventListener("click", () => draw(false)); draw(true);
+})();
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-copy]"); if (!t) return;
+  const done = () => { const l = t.querySelector(".a"); l.textContent = `Copied: ${t.dataset.copy}`; setTimeout(() => { l.textContent = "Copy name"; }, 2200); };
+  navigator.clipboard ? navigator.clipboard.writeText(t.dataset.copy).then(done, done) : done();
+});
+
+/* ---------- level: one straight hall, a gate every GAP units. Solid boxes, Source units, y up. ---------- */
+const GAP = 640, HW = 160, H = 400, POST = 12, DW = (HW - POST) * 2, EYE = H / 2;
+const gx = (k) => k * GAP, END = gx(NS - 1);
+const ORANGE = 0, GREY = 1, DARK = 2, LIGHT = 3;
+const brushes = [], lights = [];
+const B = (x0, y0, z0, x1, y1, z1, m) => brushes.push({ min: [Math.min(x0, x1), y0, Math.min(z0, z1)], max: [Math.max(x0, x1), y1, Math.max(z0, z1)], m });
+B(-1200, -32, -260, END + 64, 0, 260, GREY);
+B(-1200, 0, -192, END + 64, H, -HW, ORANGE); B(-1200, 0, HW, END + 64, H, 192, ORANGE);
+B(-1200, 0, -192, -1168, H, 192, ORANGE);
+B(END + 2, 0, -192, END + 64, H, 192, DARK);
+for (let k = 0; k < NS; k++) {
+  B(gx(k) - 14, 0, -HW, gx(k) + 2, H, -HW + POST, DARK); B(gx(k) - 14, 0, HW - POST, gx(k) + 2, H, HW, DARK); // gate posts
+  B(gx(k) - 224, 384, -HW, gx(k) - 216, 390, HW, LIGHT);
+}
+
+/* ---------- quads: the gates and the floor numbers, each textured from a 2D canvas ---------- */
+// A gate is a slab in its project's colours with a hazard strip along the bottom edge. Its face is the
+// page section laid over it (see the loop), so the texture only needs the slab itself.
+const DARKG = { bg: [18, 19, 20], a: "#e8792b", b: "#121314", glow: [1.0, 0.56, 0.22] };
+const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [10, 10, 10], a: "#ff5a2b", b: "#0a0a0a", glow: [1.0, 0.36, 0.16] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] } };
+faces.forEach((fc, k) => {
+  const th = THEME[themeOf(k)];
+  fc.style.setProperty("--gate", `rgb(${th.bg})`); fc.style.setProperty("--sa", th.a); fc.style.setProperty("--sb", th.b);
+  fc.style.zIndex = NS - k; // a nearer gate hides the ones behind it
+  fc.insertAdjacentHTML("beforeend", '<i class="strip"></i><i class="fog"></i>');
+});
+// Lighting: a warm bar over the approach to each gate, and every gate throws its own colour on the hall.
+for (let k = 0; k < NS; k++) {
+  lights.push({ p: [gx(k) - 220, 330, 0], base: 1.1, key: k, col: [1.0, 0.93, 0.82] });
+  lights.push({ p: [gx(k) - 46, EYE, 0], base: 1.25, key: k, col: THEME[themeOf(k)].glow, gate: true });
+}
+const quads = [];
+function gateCanvas(k) {
+  const W = 740, Hh = 1000, cvs = document.createElement("canvas"); cvs.width = W; cvs.height = Hh;
+  const c = cvs.getContext("2d"), th = THEME[themeOf(k)];
+  c.fillStyle = `rgb(${th.bg})`; c.fillRect(0, 0, W, Hh);
+  c.save(); c.beginPath(); c.rect(0, Hh - 78, W, 60); c.clip();
+  c.fillStyle = th.a; c.fillRect(0, Hh - 78, W, 60);
+  c.fillStyle = th.b; for (let x = -80; x < W + 80; x += 64) { c.beginPath(); c.moveTo(x, Hh - 18); c.lineTo(x + 32, Hh - 18); c.lineTo(x + 92, Hh - 78); c.lineTo(x + 60, Hh - 78); c.fill(); }
+  c.restore();
+  return cvs;
+}
+function numCanvas(text) {
+  const cvs = document.createElement("canvas"); cvs.width = cvs.height = 256;
+  const c = cvs.getContext("2d");
+  c.fillStyle = "#fff"; c.textBaseline = "middle"; c.textAlign = "center"; c.font = '700 230px "Barlow Condensed"';
+  c.fillText(text, 128, 138);
+  return cvs;
+}
+function glowCanvas() {
+  const cvs = document.createElement("canvas"); cvs.width = 256; cvs.height = 64;
+  const c = cvs.getContext("2d"), g = c.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, "rgba(255,238,210,1)"); g.addColorStop(0.25, "rgba(255,238,210,.35)"); g.addColorStop(1, "rgba(255,238,210,0)");
+  c.setTransform(1, 0, 0, 0.25, 0, 0); c.fillStyle = g; c.fillRect(0, 0, 256, 256); // a circle squashed into a wide ellipse
+  return cvs;
+}
+function buildQuads() {
+  for (let k = 0; k < NS; k++) {
+    quads.push({ gate: k, c: [gx(k), H / 2, 0], r: [0, 0, 1], u: [0, 1, 0], w: DW, h: H, canvas: gateCanvas(k) });
+    quads.push({ c: [gx(k) - 40, 0.6, 0], r: [0, 0, 1], u: [1, 0, 0], w: 60, h: 60, canvas: numCanvas(pad(k)), decal: 0.4 });
+    quads.push({ c: [gx(k) - 227, 387, 0], r: [0, 0, 1], u: [0, 1, 0], w: 560, h: 120, canvas: glowCanvas(), decal: 0.5, add: true }); // halo round the light bar
   }
 }
 
-const PROJECTS = [
-{
-name: 'RFCraft',
-desc: 'A full Minecraft clone built entirely in the browser with Three.js. Survival mode, creative mode, mobs, crafting, real MC textures — the works.',
-tags: ['Three.js', 'WebGL', 'Game'],
-badge: 'game',
-emoji: '⛏️',
-demo: 'https://risingforceofficial.github.io/RFCraft/',
-download: 'https://github.com/InterSpaceStudios/voxelcraft',
-date: '2026-02-01',
-popularity: 100,
-},
-{
-name: 'RFBlast',
-desc: 'Fast-paced block puzzle game. Drag and drop blocks to clear rows and columns. Addictive one-more-round gameplay.',
-tags: ['HTML5', 'Canvas', 'Game'],
-badge: 'game',
-emoji: '🧱',
-demo: 'https://risingforceofficial.github.io/RFBlast/',
-download: 'https://github.com/InterSpaceStudios/block-blast',
-date: '2026-01-28',
-popularity: 85,
-},
-{
-name: 'RFQR',
-desc: 'Professional QR code generator with real-time preview. Multiple sizes, download options, and clipboard support. Perfect for developers and marketers.',
-tags: ['JavaScript', 'QR', 'Tool'],
-badge: 'tool',
-emoji: '📱',
-demo: 'https://risingforceofficial.github.io/RFQR/',
-download: 'https://github.com/InterSpaceStudios/link2qr',
-date: '2026-01-20',
-popularity: 70,
-},
-{
-name: 'RFUnits',
-desc: 'Universal unit converter with 8 categories: length, weight, temperature, volume, area, speed, time, and energy. Real-time conversion with quick presets.',
-tags: ['JavaScript', 'Converter', 'Tool'],
-badge: 'tool',
-emoji: '📐',
-demo: 'https://risingforceofficial.github.io/RFUnits/',
-download: 'https://github.com/InterSpaceStudios/unitflow',
-date: '2026-01-18',
-popularity: 55,
-},
-{
-name: 'RFHash',
-desc: 'Cryptographic hash generator with 6 algorithms (MD5, SHA-1, SHA-256, SHA-512, SHA3). Supports text input and file uploads up to 50MB.',
-tags: ['Cryptography', 'Security', 'Tool'],
-badge: 'tool',
-emoji: '🔐',
-demo: 'https://risingforceofficial.github.io/RFHash/',
-download: 'https://github.com/InterSpaceStudios/hashflow',
-date: '2026-01-15',
-popularity: 60,
-},
-{
-name: 'RFSudoku',
-desc: 'Sleek Sudoku puzzle game with 8 difficulty levels, 9 accent color themes, light/dark mode, notes, hints, and undo. Fully browser-based.',
-tags: ['JavaScript', 'Puzzle', 'Game'],
-badge: 'game',
-emoji: '🧠',
-demo: 'https://risingforceofficial.github.io/RFSudoku/',
-download: 'https://github.com/RisingForceOFFICIAL/RFSudoku',
-date: '2026-01-31',
-popularity: 90,
-},
-{
-name: 'RF2048',
-desc: '2048 puzzle game with smooth tile animations, swipe controls, undo, and score tracking. Dark RF theme with light/dark toggle.',
-tags: ['JavaScript', 'Puzzle', 'Game'],
-badge: 'game',
-emoji: '🧮',
-demo: 'https://risingforceofficial.github.io/RF2048/',
-download: 'https://github.com/RisingForceOFFICIAL/rf2048',
-date: '2026-01-31',
-popularity: 80,
-},
-{
-name: 'RFSnake',
-desc: 'Classic snake game with 4 difficulty modes, wall toggle, particle effects, and swipe controls. Smooth animations and high score tracking.',
-tags: ['JavaScript', 'Canvas', 'Game'],
-badge: 'game',
-emoji: '🐍',
-demo: 'https://risingforceofficial.github.io/RFSnake/',
-download: 'https://github.com/RisingForceOFFICIAL/rfsnake',
-date: '2026-01-31',
-popularity: 75,
-},
-{
-name: 'RFColor',
-desc: 'Color palette generator with HSL picker, 5 harmony modes, WCAG contrast checker, and export to CSS/JSON. Save unlimited palettes.',
-tags: ['JavaScript', 'Design', 'Tool'],
-badge: 'tool',
-emoji: '🎨',
-demo: 'https://risingforceofficial.github.io/RFColor/',
-download: 'https://github.com/RisingForceOFFICIAL/rfcolor',
-date: '2026-01-31',
-popularity: 65,
-},
-{
-name: 'RFTimer',
-desc: 'Stopwatch and countdown timer with lap tracking, millisecond precision, preset buttons, fullscreen mode, and alarm sounds.',
-tags: ['JavaScript', 'Utility', 'Tool'],
-badge: 'tool',
-emoji: '⏱️',
-demo: 'https://risingforceofficial.github.io/RFTimer/',
-download: 'https://github.com/RisingForceOFFICIAL/rftimer',
-date: '2026-01-31',
-popularity: 50,
-},
-{
-name: 'RFMemory',
-desc: 'Card memory matching game with 4 grid sizes, 3D flip animations, star ratings, and best score tracking. 48 emoji to match.',
-tags: ['JavaScript', 'Puzzle', 'Game'],
-badge: 'game',
-emoji: '🃏',
-demo: 'https://risingforceofficial.github.io/RFMemory/',
-download: 'https://github.com/RisingForceOFFICIAL/rfmemory',
-date: '2026-01-31',
-popularity: 70,
-},
-{
-name: 'RFNotes',
-desc: 'Minimal markdown notepad with live preview, search, auto-save, and export. All notes stored locally in your browser.',
-tags: ['JavaScript', 'Markdown', 'Tool'],
-badge: 'tool',
-emoji: '📝',
-demo: 'https://risingforceofficial.github.io/RFNotes/',
-download: 'https://github.com/RisingForceOFFICIAL/rfnotes',
-date: '2026-01-31',
-popularity: 55,
-},
-{
-name: 'RFBeats',
-desc: '16-step drum machine with 8 synthesized sounds, swing control, 4 pattern slots, and per-track volume. All Web Audio, zero dependencies.',
-tags: ['Web Audio', 'Music', 'Tool'],
-badge: 'tool',
-emoji: '🎵',
-demo: 'https://risingforceofficial.github.io/RFBeats/',
-download: 'https://github.com/RisingForceOFFICIAL/rfbeats',
-date: '2026-01-31',
-popularity: 72,
-},
-{
-name: 'RFType',
-desc: 'Typing speed test with real-time WPM tracking, accuracy stats, WPM chart, and personal bests. 4 test durations with 200+ word bank.',
-tags: ['JavaScript', 'Typing', 'Game'],
-badge: 'game',
-emoji: '🔤',
-demo: 'https://risingforceofficial.github.io/RFType/',
-download: 'https://github.com/RisingForceOFFICIAL/rftype',
-date: '2026-01-31',
-popularity: 68,
-},
-{
-name: 'RFView',
-desc: 'Live HTML/CSS/JS editor with instant preview, resizable panes, starter templates, and code persistence. Great for quick prototyping.',
-tags: ['JavaScript', 'Editor', 'Tool'],
-badge: 'tool',
-emoji: '👁️',
-demo: 'https://risingforceofficial.github.io/RFView/',
-download: 'https://github.com/RisingForceOFFICIAL/rfview',
-date: '2026-02-02',
-popularity: 62,
-},
-{
-name: 'RFChaos',
-desc: 'Chaos-themed interactive experience. Embrace the madness.',
-tags: ['JavaScript', 'Fun', 'Game'],
-badge: 'game',
-emoji: '🌀',
-demo: 'https://risingforceofficial.github.io/RFChaos/',
-download: 'https://github.com/RisingForceOFFICIAL/RFChaos',
-date: '2026-02-03',
-popularity: 45,
-},
-{
-name: 'RFCSS',
-desc: 'CSS beautifier and minifier with syntax highlighting. Format messy CSS or compress it for production with live size comparison.',
-tags: ['JavaScript', 'CSS', 'Tool'],
-badge: 'tool',
-date: '2026-01-30',
-popularity: 58,
-emoji: '🎨',
-demo: 'https://risingforceofficial.github.io/RFCSS/',
-download: 'https://github.com/RisingForceOFFICIAL/RFCSS',
-},
-{
-name: 'RFAnimate',
-desc: 'Visual CSS animation builder with presets, timeline, easing curves, and live preview. Generate keyframe animations and copy the code.',
-tags: ['JavaScript', 'CSS', 'Tool'],
-badge: 'tool',
-emoji: '✨',
-demo: 'https://risingforceofficial.github.io/RFAnimate/',
-download: 'https://github.com/RisingForceOFFICIAL/RFAnimate',
-date: '2026-01-30',
-popularity: 64,
-},
-{
-name: 'RFCube',
-desc: '3D tunnel runner game. Dodge obstacles, survive as long as you can, and beat your high score. Keyboard and touch controls.',
-tags: ['JavaScript', 'Canvas', 'Game'],
-badge: 'game',
-emoji: '⬛',
-demo: 'https://risingforceofficial.github.io/RFCube/',
-download: 'https://github.com/RisingForceOFFICIAL/RFCube',
-date: '2026-02-04',
-popularity: 52,
-},
-{
-name: 'RFPong',
-desc: 'Arcade Pong with neon glow effects, 4 difficulty levels, particle trails, screen shake, and AI opponent. Touch and keyboard controls.',
-tags: ['JavaScript', 'Canvas', 'Game'],
-badge: 'game',
-emoji: '🏓',
-demo: 'https://risingforceofficial.github.io/RFPong/',
-download: 'https://github.com/RisingForceOFFICIAL/RFPong',
-date: '2026-02-05',
-popularity: 78,
-},
-{
-name: 'RFChess',
-desc: 'Beautiful chess with drag-and-drop, move highlighting, timers, captured pieces, move history, check/checkmate detection, and promotion.',
-tags: ['JavaScript', 'Strategy', 'Game'],
-badge: 'game',
-emoji: '♟️',
-demo: 'https://risingforceofficial.github.io/RFChess/',
-download: 'https://github.com/RisingForceOFFICIAL/RFChess',
-date: '2026-02-07',
-popularity: 82,
-},
-];
+/* ---------- renderer (hand-written WebGL2) ---------- */
+const canvas = $("#gl");
+const gl = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
+const FOG = [0.035, 0.035, 0.04], FOGK = 0.0006, GFOG = 0.001;
+let R = null;
 
-// Sorting and filtering state
-let currentFilter = 'all';
-let currentSort = 'newest';
-
-// Render projects
-const grid = document.getElementById('projects-grid');
-document.getElementById('project-count').textContent = PROJECTS.length;
-
-function sortProjects(projects, sortBy) {
-  const sorted = [...projects];
-  switch(sortBy) {
-    case 'newest': return sorted.sort((a,b) => new Date(b.date) - new Date(a.date));
-    case 'oldest': return sorted.sort((a,b) => new Date(a.date) - new Date(b.date));
-    case 'az': return sorted.sort((a,b) => a.name.localeCompare(b.name));
-    case 'za': return sorted.sort((a,b) => b.name.localeCompare(a.name));
-    case 'popular': return sorted.sort((a,b) => b.popularity - a.popularity);
-    default: return sorted;
+const WORLD_VS = `#version 300 es
+layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNor; layout(location=2) in float aMat;
+uniform mat4 uVP; out vec3 vPos; out vec3 vNor; flat out float vMat;
+void main() { vPos = aPos; vNor = aNor; vMat = aMat; gl_Position = uVP * vec4(aPos, 1.0); }`;
+// Dev texture in world space: 128-unit checker, a bright line every 128 and a faint one every 32,
+// so the grid measures the map the way dev_measuregeneric does.
+const WORLD_FS = `#version 300 es
+precision highp float;
+in vec3 vPos; in vec3 vNor; flat in float vMat;
+uniform vec3 uEye, uFog; uniform vec2 uRes; uniform vec4 uLights[16]; uniform vec3 uLightCol[16]; uniform int uNL;
+out vec4 o;
+float grid(vec2 uv, float size) {
+  vec2 c = uv / size, w = fwidth(c);
+  vec2 g = abs(fract(c - 0.5) - 0.5) / max(w * 1.4, vec2(1e-5));
+  return (1.0 - min(min(g.x, g.y), 1.0)) * (1.0 - smoothstep(0.12, 0.45, max(w.x, w.y)));
+}
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+void main() {
+  vec3 n = normalize(vNor);
+  int m = int(vMat + 0.5);
+  if (m == 3) { o = vec4(1.0, 0.95, 0.86, 1.0); return; }
+  vec2 uv = abs(n.x) > 0.5 ? vPos.zy : abs(n.y) > 0.5 ? vPos.xz : vPos.xy;
+  vec3 base = m == 0 ? vec3(0.84, 0.42, 0.13) : m == 1 ? vec3(0.40, 0.40, 0.41) : vec3(0.13, 0.13, 0.14);
+  base *= mix(0.86, 1.0, mod(floor(uv.x / 128.0) + floor(uv.y / 128.0), 2.0));
+  base = mix(base, base * 0.68, grid(uv, 32.0) * 0.6);
+  base = mix(base, base * 1.5 + 0.04, grid(uv, 128.0) * 0.85);
+  float face = n.y > 0.5 ? 1.0 : n.y < -0.5 ? 0.55 : abs(n.x) > 0.5 ? 0.82 : 0.66;
+  // contact shadow where surfaces meet: the floor darkens into the walls, the walls into the floor
+  float ao = n.y > 0.5 ? mix(0.45, 1.0, smoothstep(0.0, 90.0, ${HW}.0 - abs(vPos.z))) : mix(0.5, 1.0, smoothstep(0.0, 120.0, vPos.y));
+  vec3 V = normalize(uEye - vPos), lit = vec3(0.17 * face), shine = vec3(0.0);
+  for (int i = 0; i < 16; i++) {
+    if (i >= uNL) break;
+    vec3 d = uLights[i].xyz - vPos; float d2 = dot(d, d); vec3 L = d * inversesqrt(d2);
+    vec3 c = uLightCol[i] * uLights[i].w / (1.0 + d2 / 40000.0);
+    lit += c * max(dot(n, L), 0.0);
+    // a little of the light's own colour everywhere, and a glossy streak on the floor
+    shine += c * (0.07 + (m == 1 ? 0.55 * pow(max(dot(n, normalize(L + V)), 0.0), 40.0) : 0.0));
   }
+  vec3 col = (base * min(lit, vec3(1.7)) + shine) * ao;
+  col = mix(uFog, col, exp(-length(vPos - uEye) * ${FOGK}));
+  vec2 p = gl_FragCoord.xy / uRes * 2.0 - 1.0;
+  col *= 1.0 - 0.42 * smoothstep(0.55, 1.35, length(p * vec2(1.0, 0.7)));   // vignette: quiet the edges
+  o = vec4(col + (hash(gl_FragCoord.xy) - 0.5) / 255.0, 1.0);
+}`;
+const QUAD_VS = `#version 300 es
+layout(location=0) in vec3 aPos; layout(location=1) in vec2 aUv;
+uniform mat4 uVP; uniform float uLift, uMirror; out vec2 vUv; out vec3 vPos; out float vH;
+void main() { vUv = aUv; vH = aPos.y + uLift; vPos = vec3(aPos.x, uMirror > 0.5 ? -vH : vH, aPos.z); gl_Position = uVP * vec4(vPos, 1.0); }`;
+// A gate is shown at full strength from where the camera parks, and fades with distance beyond that
+// (uPark, uK). The page face over it gets the same fade, so the two never differ.
+const QUAD_FS = `#version 300 es
+precision highp float;
+in vec2 vUv; in vec3 vPos; in float vH; uniform sampler2D uTex; uniform vec3 uEye, uFog; uniform float uGain, uMirror, uPark, uK;
+out vec4 o;
+void main() {
+  vec4 t = texture(uTex, vUv) * uGain;           // premultiplied
+  if (uMirror > 0.5) t *= 0.13 * exp(-vH / 70.0);   // the gate's reflection in the floor: faint, and gone a little way down
+  float f = exp(-max(0.0, abs(vPos.x - uEye.x) - uPark) * uK);
+  o = vec4(mix(uFog * t.a, t.rgb, f), t.a);
+}`;
+
+function program(vsSrc, fsSrc) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vsSrc], [gl.FRAGMENT_SHADER, fsSrc]]) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {};
+  for (let i = 0, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS); i < n; i++) { const name = gl.getActiveUniform(p, i).name.replace("[0]", ""); u[name] = gl.getUniformLocation(p, name); }
+  return { p, u };
+}
+const FACES = [
+  [[1, 0, 0], [[1, 0, 1], [1, 0, 0], [1, 1, 0], [1, 1, 1]]], [[-1, 0, 0], [[0, 0, 0], [0, 0, 1], [0, 1, 1], [0, 1, 0]]],
+  [[0, 1, 0], [[0, 1, 1], [1, 1, 1], [1, 1, 0], [0, 1, 0]]], [[0, -1, 0], [[0, 0, 0], [1, 0, 0], [1, 0, 1], [0, 0, 1]]],
+  [[0, 0, 1], [[0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]]], [[0, 0, -1], [[1, 0, 0], [0, 0, 0], [0, 1, 0], [1, 1, 0]]],
+];
+function initGL() {
+  const world = program(WORLD_VS, WORLD_FS), quad = program(QUAD_VS, QUAD_FS);
+  const v = [];
+  for (const b of brushes) for (const [n, cs] of FACES) {
+    const p = cs.map((c) => [c[0] ? b.max[0] : b.min[0], c[1] ? b.max[1] : b.min[1], c[2] ? b.max[2] : b.min[2]]);
+    for (const k of [0, 1, 2, 0, 2, 3]) v.push(...p[k], ...n, b.m);
+  }
+  const wvao = gl.createVertexArray(); gl.bindVertexArray(wvao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(v), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 28, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 28, 12);
+  gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 28, 24);
+
+  const qv = [], aniso = gl.getExtension("EXT_texture_filter_anisotropic");
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  for (const s of quads) {
+    const at = (a, b) => [0, 1, 2].map((k) => s.c[k] + s.r[k] * a * s.w / 2 + s.u[k] * b * s.h / 2);
+    qv.push(...at(-1, -1), 0, 1, ...at(1, -1), 1, 1, ...at(1, 1), 1, 0, ...at(-1, 1), 0, 0);
+    s.tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, s.tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, s.canvas);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    if (aniso) gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+    delete s.canvas;
+  }
+  const qvao = gl.createVertexArray(); gl.bindVertexArray(qvao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(qv), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 20, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 20, 12);
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  R = { world, quad, wvao, qvao, verts: v.length / 7, lightData: new Float32Array(64), lightCol: new Float32Array(48) };
 }
 
-function renderProjects() {
-  grid.innerHTML = '';
-  let filtered = currentFilter === 'all' ? PROJECTS : PROJECTS.filter(p => p.badge === currentFilter);
-  let sorted = sortProjects(filtered, currentSort);
-  
-  sorted.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'project-card fade-in';
-    card.style.transitionDelay = (i * 0.05) + 's';
-    card.dataset.category = p.badge;
-
-const badgeClass = p.badge === 'game' ? 'badge-game' : p.badge === 'tool' ? 'badge-tool' : 'badge-web';
-
-const previewFile = p.download || p.demo || null;
-
-card.innerHTML = `
-<div class="project-thumb">
-<span class="placeholder">${p.emoji}</span>
-<span class="project-badge ${badgeClass}">${p.badge}</span>
-</div>
-<div class="project-info">
-<div class="project-name">${p.name}</div>
-<div class="project-desc">${p.desc}</div>
-<div class="project-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
-<div class="project-actions">
-${p.demo ? `<a href="${p.demo}" target="_blank" class="btn btn-primary" onclick="event.stopPropagation()">▶ Play</a>` : ''}
-${p.download ? `<a href="${p.download}" target="_blank" class="btn btn-secondary" onclick="event.stopPropagation()">GitHub</a>` : ''}
-</div>
-</div>`;
-
-// Click anywhere on card to open in new tab
-if (p.demo) {
-card.addEventListener('click', () => window.open(p.demo, '_blank'));
+// The camera never turns: it sits on the hall's centre line at half height and looks straight down it,
+// so the only movement is forward or back. A modest field of view keeps the walls from rushing past.
+let tanV = 1, tanH = 1, dist = 440;
+const VW = () => document.documentElement.clientWidth;
+function lens() {
+  const aspect = VW() / innerHeight, wide = aspect >= 1;
+  tanV = Math.tan((wide ? 56 : 70) * Math.PI / 360); tanH = tanV * aspect;
+  // park where the gate opening fills most of the frame, whichever of width or height runs out first
+  dist = Math.min(GAP - 110, Math.max((DW / 2) / (tanH * (wide ? 0.9 : 0.95)), (H / 2) / (tanV * 0.8)));
+  // the gate's outline on screen when parked: every face is laid out at this size
+  const w = (DW / 2) / (dist * tanH) * VW(), h = (H / 2) / (dist * tanV) * innerHeight, root = document.documentElement.style;
+  root.setProperty("--l", ((VW() - w) / 2).toFixed(1) + "px"); root.setProperty("--t", ((innerHeight - h) / 2).toFixed(1) + "px");
+  root.setProperty("--w", w.toFixed(1) + "px"); root.setProperty("--h", h.toFixed(1) + "px");
 }
-
-// Card tilt effect
-card.addEventListener('mousemove', (e) => {
-const rect = card.getBoundingClientRect();
-const x = e.clientX - rect.left;
-const y = e.clientY - rect.top;
-const centerX = rect.width / 2;
-const centerY = rect.height / 2;
-const rotateX = (y - centerY) / 20;
-const rotateY = (centerX - x) / 20;
-card.style.transform = `translateY(-4px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-});
-card.addEventListener('mouseleave', () => {
-card.style.transform = 'translateY(-4px) perspective(1000px) rotateX(0deg) rotateY(0deg)';
-});
-
-    // Hover sound
-    card.addEventListener('mouseenter', () => playSound('hover'));
-    
-    grid.appendChild(card);
+function viewProj(x) {
+  const n = 4, far = 9000, P0 = 1 / tanH, P5 = 1 / tanV, A = (far + n) / (n - far), Bz = 2 * far * n / (n - far);
+  // looking down +x: screen right is +z, up is +y. Columns of P * V written out.
+  return new Float32Array([0, 0, -A, 1, 0, P5, 0, 0, P0, 0, 0, 0, 0, -P5 * EYE, A * x + Bz, -x]);
+}
+const gateGain = (k, q) => mix(0.6, 1, clamp(1 - Math.abs(q - k), 0, 1));
+function render(x, q) {
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(FOG[0], FOG[1], FOG[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  const vp = viewProj(x), eye = [x, EYE, 0];
+  const near = lights.filter((l) => Math.abs(l.p[0] - x) < 1700).sort((a, b) => Math.abs(a.p[0] - x) - Math.abs(b.p[0] - x)).slice(0, 16);
+  near.forEach((l, i) => {
+    const act = clamp(1 - Math.abs(q - l.key), 0, 1);
+    R.lightData.set(l.p, i * 4); R.lightCol.set(l.col, i * 3);
+    R.lightData[i * 4 + 3] = l.gate ? l.base * mix(0.25, 1, act) * (1 - lift(l.key, q)) : l.base * mix(0.55, 1.3, act); // a lifted gate stops glowing
   });
-  
-  // Re-observe fade-in elements
-  document.querySelectorAll('.project-card.fade-in').forEach(el => observer.observe(el));
-}
+  gl.useProgram(R.world.p);
+  gl.uniformMatrix4fv(R.world.u.uVP, false, vp);
+  gl.uniform3fv(R.world.u.uEye, eye); gl.uniform3fv(R.world.u.uFog, FOG); gl.uniform2f(R.world.u.uRes, canvas.width, canvas.height);
+  gl.uniform4fv(R.world.u.uLights, R.lightData); gl.uniform3fv(R.world.u.uLightCol, R.lightCol); gl.uniform1i(R.world.u.uNL, near.length);
+  gl.bindVertexArray(R.wvao); gl.drawArrays(gl.TRIANGLES, 0, R.verts);
 
-// Scroll animations
-const observer = new IntersectionObserver((entries) => {
-entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-
-// Initial render
-renderProjects();
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// Nav scroll effect
-const nav = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-nav.classList.toggle('scrolled', window.scrollY > 50);
-});
-
-// Active nav link
-const sections = document.querySelectorAll('section, .hero');
-const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => {
-let current = '';
-sections.forEach(s => {
-const top = s.offsetTop - 100;
-if (window.scrollY >= top) current = s.getAttribute('id') || 'home';
-});
-navLinks.forEach(a => {
-a.classList.remove('active');
-if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-});
-});
-
-// Preview modal
-const previewOverlay = document.getElementById('preview-overlay');
-const previewIframe = document.getElementById('preview-iframe');
-const previewName = document.getElementById('preview-name');
-const previewClose = document.getElementById('preview-close');
-
-function openPreview(src, name) {
-previewName.textContent = name;
-previewIframe.src = src;
-previewOverlay.classList.add('active');
-document.body.style.overflow = 'hidden';
-}
-
-function closePreview() {
-previewOverlay.classList.remove('active');
-previewIframe.src = '';
-document.body.style.overflow = '';
-}
-
-previewClose.addEventListener('click', closePreview);
-previewOverlay.addEventListener('click', (e) => {
-if (e.target === previewOverlay) closePreview();
-});
-document.addEventListener('keydown', (e) => {
-if (e.key === 'Escape' && previewOverlay.classList.contains('active')) closePreview();
-});
-
-// ===== NEW FEATURES =====
-
-// Terminal typing effect
-const terminalEl = document.getElementById('terminal-text');
-const messages = [
-'$ npm run build',
-'$ git push origin main', 
-'$ ./build_something_cool.sh',
-'$ echo "Building cool stuff with code"'
-];
-let msgIndex = 0, charIndex = 0;
-const typeSpeed = 80, eraseSpeed = 40, pauseTime = 2000;
-
-function typeWriter() {
-const currentMsg = messages[msgIndex];
-if (charIndex < currentMsg.length) {
-terminalEl.innerHTML = currentMsg.substring(0, charIndex + 1) + '<span class="terminal-cursor">|</span>';
-charIndex++;
-setTimeout(typeWriter, typeSpeed);
-} else {
-setTimeout(() => {
-eraseText();
-}, pauseTime);
-}
-}
-
-function eraseText() {
-const currentMsg = messages[msgIndex];
-if (charIndex > 2) { // Keep "$ "
-terminalEl.innerHTML = currentMsg.substring(0, charIndex) + '<span class="terminal-cursor">|</span>';
-charIndex--;
-setTimeout(eraseText, eraseSpeed);
-} else {
-msgIndex = (msgIndex + 1) % messages.length;
-charIndex = 2; // Start after "$ "
-setTimeout(typeWriter, 500);
-}
-}
-
-// Start typing after a brief delay
-setTimeout(typeWriter, 1000);
-
-// Project filters
-const filterBtns = document.querySelectorAll('.filter-btn');
-const sortSelect = document.getElementById('sort-select');
-
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    playSound('filter');
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    renderProjects();
+  gl.useProgram(R.quad.p);
+  gl.uniformMatrix4fv(R.quad.u.uVP, false, vp);
+  gl.uniform3fv(R.quad.u.uEye, eye); gl.uniform3fv(R.quad.u.uFog, FOG); gl.uniform1i(R.quad.u.uTex, 0);
+  gl.bindVertexArray(R.qvao); gl.activeTexture(gl.TEXTURE0);
+  gl.uniform1f(R.quad.u.uPark, dist); gl.uniform1f(R.quad.u.uK, GFOG);
+  const gate = (s, i, gain) => { gl.uniform1f(R.quad.u.uLift, lift(s.gate, q) * (H + 8)); gl.uniform1f(R.quad.u.uGain, gain); gl.bindTexture(gl.TEXTURE_2D, s.tex); gl.drawArrays(gl.TRIANGLE_FAN, i * 4, 4); };
+  // polished floor: the gate in front of you mirrored below it (and the next one, once this one is up)
+  const k0 = Math.min(Math.floor(q), NS - 1), f = q - k0;
+  gl.enable(gl.BLEND); gl.disable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE); gl.uniform1f(R.quad.u.uMirror, 1);
+  quads.forEach((s, i) => {
+    if (s.gate === undefined) return;
+    const w = s.gate === k0 ? 1 : s.gate === k0 + 1 ? smooth(clamp((f - 0.3) / 0.3, 0, 1)) : 0;
+    if (w > 0) gate(s, i, gateGain(s.gate, q) * w);
   });
-});
-
-// Sorting
-sortSelect.addEventListener('change', () => {
-  playSound('sort');
-  currentSort = sortSelect.value;
-  renderProjects();
-});
-
-// Sound on button hover
-filterBtns.forEach(btn => {
-  btn.addEventListener('mouseenter', () => playSound('hover'));
-});
-sortSelect.addEventListener('mouseenter', () => playSound('hover'));
-
-// Back to top button
-const backToTop = document.getElementById('back-to-top');
-window.addEventListener('scroll', () => {
-if (window.scrollY > 300) {
-backToTop.classList.add('visible');
-} else {
-backToTop.classList.remove('visible');
-}
-});
-backToTop.addEventListener('click', () => {
-window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// ===== VISUAL FLEX =====
-
-// Cursor glow follow
-const cursorGlow = document.getElementById('cursor-glow');
-let mouseX = 0, mouseY = 0;
-document.addEventListener('mousemove', (e) => {
-mouseX = e.clientX; mouseY = e.clientY;
-cursorGlow.style.left = mouseX + 'px';
-cursorGlow.style.top = mouseY + 'px';
-});
-
-// Floating code background
-const codeSnippets = [
-'const app = createServer();',
-'function render(scene) {',
-'  return mesh.update();',
-'import { useState } from "react";',
-'git commit -m "ship it"',
-'for (let i = 0; i < n; i++) {',
-'export default class Game {',
-'  this.velocity += gravity * dt;',
-'const ctx = canvas.getContext("2d");',
-'npm install --save three',
-'if (collision) bounce();',
-'async function fetchData() {',
-'  world.generate(seed);',
-'player.health -= damage;',
-'return <Component {...props} />;',
-'socket.on("connect", () => {});',
-'  scene.add(new THREE.Mesh(geo, mat));',
-'while (running) update();',
-'docker compose up -d',
-'SELECT * FROM projects;',
-];
-
-const codeBg = document.getElementById('code-bg');
-codeSnippets.forEach((snippet, i) => {
-const el = document.createElement('div');
-el.className = 'code-line';
-el.textContent = snippet;
-el.style.left = (Math.random() * 90) + '%';
-el.style.animationDuration = (15 + Math.random() * 25) + 's';
-el.style.animationDelay = (-Math.random() * 30) + 's';
-el.style.fontSize = (11 + Math.random() * 4) + 'px';
-codeBg.appendChild(el);
-});
-
-// Particle system
-const pCanvas = document.getElementById('particle-canvas');
-const pCtx = pCanvas.getContext('2d');
-let particles = [];
-const PARTICLE_COUNT = 60;
-
-function resizeParticles() {
-pCanvas.width = window.innerWidth;
-pCanvas.height = window.innerHeight;
-}
-resizeParticles();
-window.addEventListener('resize', resizeParticles);
-
-for (let i = 0; i < PARTICLE_COUNT; i++) {
-particles.push({
-x: Math.random() * window.innerWidth,
-y: Math.random() * window.innerHeight,
-vx: (Math.random() - 0.5) * 0.3,
-vy: (Math.random() - 0.5) * 0.3,
-r: Math.random() * 2 + 0.5,
-o: Math.random() * 0.3 + 0.05
-});
+  gl.disable(gl.BLEND); gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.uniform1f(R.quad.u.uMirror, 0);
+  quads.forEach((s, i) => { if (s.gate !== undefined) gate(s, i, gateGain(s.gate, q)); });
+  gl.enable(gl.BLEND); gl.depthMask(false); gl.uniform1f(R.quad.u.uLift, 0); gl.uniform1f(R.quad.u.uPark, 0); gl.uniform1f(R.quad.u.uK, FOGK);
+  quads.forEach((s, i) => {
+    if (!s.decal) return;
+    gl.blendFunc(gl.ONE, s.add ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
+    gl.uniform1f(R.quad.u.uGain, s.decal); gl.bindTexture(gl.TEXTURE_2D, s.tex);
+    gl.drawArrays(gl.TRIANGLE_FAN, i * 4, 4);
+  });
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.disable(gl.BLEND); gl.depthMask(true);
 }
 
-function animateParticles() {
-pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-const w = pCanvas.width, h = pCanvas.height;
-
-particles.forEach(p => {
-// Drift towards mouse slightly
-const dx = mouseX - p.x, dy = mouseY - p.y;
-const dist = Math.sqrt(dx*dx + dy*dy);
-if (dist < 300) {
-p.vx += dx * 0.00003;
-p.vy += dy * 0.00003;
+/* ---------- the rail: q is "which gate", fractional while travelling ---------- */
+// Leaving gate k: first the gate rises (first 30% of the trip), then the camera glides to the next stop.
+const lift = (k, q) => smooth(clamp((q - k) / 0.3, 0, 1));
+function camX(q) {
+  const k = Math.min(Math.floor(q), NS - 2), f = q - k;
+  return mix(gx(k), gx(k + 1), smooth(clamp((f - 0.15) / 0.85, 0, 1))) - dist;
 }
-p.x += p.vx; p.y += p.vy;
-p.vx *= 0.999; p.vy *= 0.999;
-if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
-if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+// A trip is a fixed-length glide with no acceleration at either end, so it starts and stops softly and
+// never creeps. Jumps of more than one gate cut to the gate before and glide the last leg only.
+const glide = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+let anchors = [];
+const measure = () => { anchors = stops.map((s) => s.offsetTop); };
+function nearest() { let best = 0; for (let k = 1; k < anchors.length; k++) if (Math.abs(anchors[k] - scrollY) < Math.abs(anchors[best] - scrollY)) best = k; return best; }
 
-pCtx.beginPath();
-pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-pCtx.fillStyle = `rgba(14,165,233,${p.o})`;
-pCtx.fill();
-});
-
-// Draw connections
-particles.forEach((a, i) => {
-for (let j = i + 1; j < particles.length; j++) {
-const b = particles[j];
-const dx = a.x - b.x, dy = a.y - b.y;
-const dist = Math.sqrt(dx*dx + dy*dy);
-if (dist < 150) {
-pCtx.beginPath();
-pCtx.moveTo(a.x, a.y);
-pCtx.lineTo(b.x, b.y);
-pCtx.strokeStyle = `rgba(14,165,233,${0.06 * (1 - dist/150)})`;
-pCtx.lineWidth = 0.5;
-pCtx.stroke();
-}
-}
-});
-
-requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-// GitHub contribution graph (generated)
-const ghGrid = document.getElementById('github-grid');
-const weeks = 26; // 6 months
-for (let w = 0; w < weeks; w++) {
-const week = document.createElement('div');
-week.className = 'graph-week';
-for (let d = 0; d < 7; d++) {
-const cell = document.createElement('div');
-cell.className = 'graph-cell';
-// More activity on weekdays, recent weeks hotter
-const dayBoost = (d > 0 && d < 6) ? 0.3 : 0;
-const recentBoost = (w / weeks) * 0.4;
-const r = Math.random() + dayBoost + recentBoost;
-if (r > 1.1) cell.classList.add('l4');
-else if (r > 0.9) cell.classList.add('l3');
-else if (r > 0.7) cell.classList.add('l2');
-else if (r > 0.5) cell.classList.add('l1');
-// Tooltip
-const date = new Date();
-date.setDate(date.getDate() - ((weeks - w) * 7 + (6 - d)));
-cell.title = date.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
-week.appendChild(cell);
-}
-ghGrid.appendChild(week);
+/* ---------- radar: the hall from above ---------- */
+function buildRadar() {
+  const X0 = -700, X1 = END + 80, svg = $("#r-svg");
+  svg.setAttribute("viewBox", `${X0} -330 ${X1 - X0} 660`);
+  const walls = `<rect x="${X0}" y="-192" width="${X1 - X0}" height="32" fill="currentColor" opacity=".42"/><rect x="${X0}" y="160" width="${X1 - X0}" height="32" fill="currentColor" opacity=".42"/>`;
+  const gates = stops.map((_, k) => `<rect id="r-g${k}" x="${gx(k) - 14}" y="-160" width="28" height="320" fill="${THEME[themeOf(k)].a}"/>`).join("");
+  const hits = stops.map((_, k) => `<rect class="hit" data-go="${k}" x="${gx(k) - GAP + 20}" y="-330" width="${GAP - 6}" height="660"><title>${esc(gateName(k))}</title></rect>`).join("");
+  svg.innerHTML = `${walls}${gates}<g id="r-mk"><path d="M0 0 L380 -150 L380 150 Z" fill="#ece8df" opacity=".3"/><circle r="60" fill="#ece8df"/></g>${hits}`;
+  svg.addEventListener("click", (e) => { const h = e.target.closest("[data-go]"); if (h) scrollTo(0, anchors[+h.dataset.go]); });
 }
 
-// Skills progress bars
-const SKILLS = [
-{ name: 'JavaScript', icon: '⚡', pct: 92 },
-{ name: 'HTML / CSS', icon: '🎨', pct: 90 },
-{ name: 'Three.js / WebGL', icon: '🧊', pct: 80 },
-{ name: 'Python', icon: '🐍', pct: 75 },
-{ name: 'Node.js', icon: '🟢', pct: 72 },
-{ name: 'TypeScript', icon: '🔷', pct: 68 },
-{ name: 'React', icon: '⚛️', pct: 65 },
-{ name: 'C#', icon: '🎯', pct: 55 },
-{ name: 'Java', icon: '☕', pct: 50 },
-{ name: 'Lua', icon: '🌙', pct: 60 },
-{ name: 'Game Dev', icon: '🎮', pct: 85 },
-{ name: 'Git / DevOps', icon: '🔧', pct: 70 },
-];
+/* ---------- sound: off until asked for ---------- */
+const Sound = (() => {
+  let ctx, master, air, nb, on = false;
+  const api = {};
+  const SCALE = [0, 1, 3, 5, 7, 8, 10, 12, 13, 15]; // E Phrygian, one note per gate
+  function start() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 5;
+    master = ctx.createGain(); master.gain.value = 0; master.connect(comp).connect(ctx.destination);
+    nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const d = nb.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const noise = (freq, type, qv) => { const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = nb; s.loop = true; f.type = type; f.frequency.value = freq; f.Q.value = qv; s.connect(f).connect(g).connect(master); s.start(); return g; };
+    noise(220, "lowpass", 0.7).gain.value = 0.09;          // room tone
+    air = noise(700, "bandpass", 0.5); air.gain.value = 0;   // rises with camera speed
+    for (let k = 0; k < NS; k++) { // each gate hums its own note from where it stands (HRTF)
+      const f = 82.41 * Math.pow(2, SCALE[k % SCALE.length] / 12);
+      const pan = new PannerNode(ctx, { panningModel: "HRTF", distanceModel: "inverse", refDistance: 120, rolloffFactor: 2.4, positionX: gx(k), positionY: EYE, positionZ: 0 });
+      const g = ctx.createGain(); g.gain.value = 0.22;
+      for (const [mul, type, amp] of [[2, "triangle", 1], [4.01, "sine", 0.15], [1, "sine", 0.6]]) { const o = ctx.createOscillator(), og = ctx.createGain(); o.type = type; o.frequency.value = f * mul; og.gain.value = amp; o.connect(og).connect(g); o.start(); }
+      g.connect(pan).connect(master);
+    }
+  }
+  api.toggle = () => {
+    if (!ctx) start();
+    on = !on; ctx.resume();
+    master.gain.setTargetAtTime(on ? 0.6 : 0, ctx.currentTime, 0.08);
+    $("#b-snd").innerHTML = `Sound <b>${on ? "on" : "off"}</b>`; $("#b-snd").setAttribute("aria-pressed", on);
+  };
+  api.frame = (x, speed) => {
+    if (!ctx) return;
+    const l = ctx.listener;
+    if (l.positionX) { l.positionX.value = x; l.positionY.value = EYE; l.positionZ.value = 0; l.forwardX.value = 1; l.forwardY.value = 0; l.forwardZ.value = 0; l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0; }
+    else { l.setPosition(x, EYE, 0); l.setOrientation(1, 0, 0, 0, 1, 0); }
+    air.gain.setTargetAtTime(clamp(speed / 700, 0, 1) * 0.14, ctx.currentTime, 0.1);
+  };
+  api.gate = () => { // a gate motor: a rising band of noise, then the stop
+    if (!ctx || !on) return;
+    const t = ctx.currentTime, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = nb; f.type = "bandpass"; f.Q.value = 3; f.frequency.setValueAtTime(180, t); f.frequency.exponentialRampToValueAtTime(520, t + 0.7);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.08); g.gain.setValueAtTime(0.3, t + 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.78);
+    s.connect(f).connect(g).connect(master); s.start(t, 0, 0.85);
+    const o = ctx.createOscillator(), og = ctx.createGain();
+    o.frequency.setValueAtTime(90, t + 0.72); o.frequency.exponentialRampToValueAtTime(45, t + 0.86);
+    og.gain.setValueAtTime(0.0001, t); og.gain.setValueAtTime(0.4, t + 0.72); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+    o.connect(og).connect(master); o.start(t + 0.7); o.stop(t + 0.95);
+  };
+  api.pause = (hidden) => { if (ctx) hidden ? ctx.suspend() : (on && ctx.resume()); };
+  return api;
+})();
 
-const skillsGrid = document.getElementById('skills-grid');
-SKILLS.forEach(s => {
-const el = document.createElement('div');
-el.className = 'skill-item fade-in';
-el.innerHTML = `
-<div class="skill-icon">${s.icon}</div>
-<div class="skill-info">
-<div class="skill-name">${s.name}<span class="skill-pct">${s.pct}%</span></div>
-<div class="skill-bar"><div class="skill-fill" style="--target:${s.pct}%"></div></div>
-</div>`;
-skillsGrid.appendChild(el);
-observer.observe(el);
-});
-
-// Animate skill bars when visible
-const skillObserver = new IntersectionObserver((entries) => {
-entries.forEach(e => {
-if (e.isIntersecting) {
-const fill = e.target.querySelector('.skill-fill');
-if (fill) setTimeout(() => fill.classList.add('animated'), 100);
+/* ---------- main loop ---------- */
+function resize() {
+  const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(VW() * dpr), h = Math.round(innerHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
 }
-});
-}, { threshold: 0.3 });
-document.querySelectorAll('.skill-item').forEach(el => skillObserver.observe(el));
+function motionLabel() { $("#b-mot").innerHTML = `Motion <b>${calm ? "calm" : "full"}</b>`; }
 
-// Stat counter animation
-const projectCount = document.getElementById('project-count');
-const target = PROJECTS.length;
-let count = 0;
-const countInterval = setInterval(() => {
-count++;
-projectCount.textContent = count;
-if (count >= target) clearInterval(countInterval);
-}, 150);
+function boot() {
+  buildQuads(); buildRadar(); lens(); measure(); resize();
+  initGL();
+  let target = nearest(), q = target, from = q, t0 = 0, dur = 1, shown = -1, n = 0, drawn = "";
 
-// Copy email on click
-document.querySelector('.contact-email').addEventListener('click', (e) => {
-e.preventDefault();
-navigator.clipboard.writeText('risingforcebg@icloud.com').then(() => {
-const el = e.target;
-const orig = el.textContent;
-el.textContent = '✓ Copied to clipboard!';
-el.style.borderColor = 'var(--green)';
-el.style.color = 'var(--green)';
-setTimeout(() => { el.textContent = orig; el.style.borderColor = ''; el.style.color = ''; }, 2000);
-});
-});
+  const loop = (now) => {
+    requestAnimationFrame(loop);
+    const want = nearest();
+    if (want !== target) {
+      target = want;
+      if (Math.abs(target - q) > 1.5) q = target - Math.sign(target - q);
+      from = q; t0 = now; dur = 900 + 1200 * Math.min(1, Math.abs(target - q));
+      Sound.gate();
+    }
+    const before = camX(q);
+    q = calm ? target : mix(from, target, glide(clamp((now - t0) / dur, 0, 1)));
+    const x = camX(q);
 
-// ===== VISITOR COUNTERS =====
-const COUNTER_NAMESPACE = 'risingforce-site';
+    resize();
+    const sig = `${x.toFixed(2)},${q.toFixed(4)},${q === target},${canvas.width},${canvas.height}`;
+    if (sig !== drawn) {   // parked, nothing changes: no work at all
+      drawn = sig; render(x, q);
+      // Every gate in view wears its section: same size, same lift, same fade as the slab behind it.
+      const parked = q === target ? target : -1, Hh = innerHeight;
+      faces.forEach((fc, k) => {
+        const d = gx(k) - x, up = lift(k, q) * (H + 8);
+        const vis = d > 8 && k >= Math.floor(q) && k <= Math.ceil(q) && (up - H / 2) / (d * tanV) < 1;
+        if (vis !== fc.classList.contains("vis")) fc.classList.toggle("vis", vis);
+        if (!vis) return;
+        fc.style.transform = k === parked ? "none" : `translate3d(0, ${(-up / (d * tanV) * Hh / 2).toFixed(2)}px, 0) scale(${(dist / d).toFixed(5)})`;
+        fc.style.setProperty("--fog", (1 - gateGain(k, q) * Math.exp(-Math.max(0, d - dist) * GFOG)).toFixed(3));
+        fc.inert = k !== parked; // only the gate you are parked at can be clicked or tabbed into
+      });
+      shown = parked;
+    }
+    Sound.frame(x, Math.abs(x - before) * 60);
 
-// Format number with K/M suffix
-function formatCount(n) {
-if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-return n.toString();
-}
-
-// Animate counter
-function animateCounter(el, target) {
-const duration = 1500;
-const start = performance.now();
-const startVal = 0;
-function update(now) {
-const elapsed = now - start;
-const progress = Math.min(elapsed / duration, 1);
-const eased = 1 - Math.pow(1 - progress, 3);
-el.textContent = formatCount(Math.floor(startVal + (target - startVal) * eased));
-if (progress < 1) requestAnimationFrame(update);
-}
-requestAnimationFrame(update);
-}
-
-// Load and update counters using CountAPI
-async function initCounters() {
-const uniqueEl = document.getElementById('unique-visitors');
-const viewsEl = document.getElementById('total-views');
-
-try {
-// Total page views - always increment
-const viewsRes = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/pageviews`);
-const viewsData = await viewsRes.json();
-if (viewsData.value) animateCounter(viewsEl, viewsData.value);
-
-// Unique visitors - only increment if first visit
-const hasVisited = localStorage.getItem('rf-visited');
-if (!hasVisited) {
-localStorage.setItem('rf-visited', 'true');
-const uniqueRes = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/unique-visitors`);
-const uniqueData = await uniqueRes.json();
-if (uniqueData.value) animateCounter(uniqueEl, uniqueData.value);
-} else {
-// Just get current count without incrementing
-const uniqueRes = await fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/unique-visitors`);
-const uniqueData = await uniqueRes.json();
-if (uniqueData.value) animateCounter(uniqueEl, uniqueData.value);
-}
-} catch (err) {
-// Fallback to localStorage-only counts if API fails
-const localViews = parseInt(localStorage.getItem('rf-views') || '0') + 1;
-localStorage.setItem('rf-views', localViews);
-viewsEl.textContent = formatCount(localViews);
-
-const localUnique = localStorage.getItem('rf-unique') ? 1 : 1;
-localStorage.setItem('rf-unique', 'true');
-uniqueEl.textContent = formatCount(localUnique);
-}
+    if (++n % 3 === 0) {
+      $("#r-mk").setAttribute("transform", `translate(${x.toFixed(0)} 0)`);
+      $("#r-where").textContent = gateName(target);
+      $("#r-n").textContent = `${pad(target)} / ${pad(NS - 1)}`;
+      for (let k = 0; k < NS; k++) $("#r-g" + k).setAttribute("opacity", lift(k, q) > 0.5 ? 0.2 : 1);
+    }
+  };
+  requestAnimationFrame(loop);
+  addEventListener("resize", () => { resize(); lens(); measure(); drawn = ""; });
+  window.__rf = { anchors: () => anchors, state: () => ({ q, target, shown }) };
 }
 
-initCounters();
+$("#b-snd").addEventListener("click", () => Sound.toggle());
+$("#b-mot").addEventListener("click", () => { calm = !calm; store.set("rf-motion", calm ? "calm" : "full"); motionLabel(); });
+document.addEventListener("visibilitychange", () => Sound.pause(document.hidden));
+motionLabel();
+
+if (gl) {
+  document.fonts.load('700 100px "Barlow Condensed"').catch(() => {}).then(boot); // the floor numbers are drawn with it
+} else document.body.classList.add("no3d"); // no WebGL2: the page is still the whole site, on a plain background
+})();
 </script>
 </body>
 </html>
