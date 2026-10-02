@@ -44,6 +44,38 @@ window.RF = {
       repo: "https://github.com/TheKillerGame/slice",
       shots: { home: "media/slice-home.jpg", play: "media/slice-play2.jpg" },
     },
+    {
+      id: "merge", title: "Merge Drop", theme: "merge", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Drop fruit into the jar. Two of a kind merge into the next one up, all the way to a watermelon.",
+      url: "https://thekillergame.github.io/merge-drop/",
+      repo: "https://github.com/TheKillerGame/merge-drop",
+      shots: { home: "media/merge-home.jpg", play: "media/merge-play.jpg" },
+    },
+    {
+      id: "golf", title: "Mini Golf", theme: "golf", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Pull back, let go, sink it. 24 holes.",
+      url: "https://thekillergame.github.io/mini-golf/",
+      repo: "https://github.com/TheKillerGame/mini-golf",
+      shots: { home: "media/golf-home.jpg", play: "media/golf-play.jpg" },
+    },
+    {
+      id: "brick", title: "Brick Breaker", theme: "brick", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Bounce, break, repeat. 24 levels and 4 bosses.",
+      url: "https://thekillergame.github.io/brick-breaker/",
+      repo: "https://github.com/TheKillerGame/brick-breaker",
+      shots: { home: "media/brick-home.jpg", play: "media/brick-play.jpg" },
+    },
+    {
+      id: "block", title: "Block Puzzle", theme: "block", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Drag, fit, clear. A daily challenge with the same pieces for everyone, and skins to unlock.",
+      url: "https://thekillergame.github.io/block-puzzle/",
+      repo: "https://github.com/TheKillerGame/block-puzzle",
+      shots: { home: "media/block-home.jpg", play: "media/block-play.jpg" },
+    },
   ],
   // The handles from the Killer Game README. To add email: { label: "Email", value: "...", url: "mailto:..." }
   contact: [

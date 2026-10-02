@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RisingForce</title>
-<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker, The Killer Game, Knife Throw and Slice.">
+<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker and seven phone games.">
 <meta property="og:title" content="RisingForce">
 <meta property="og:description" content="Sites and games, built from scratch.">
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
     --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -58,18 +58,16 @@
 
   /* gate 0: the name, and what is behind it */
   .t-hero .top { font-size: calc(clamp(10px, 3.1cqw, 18px) * var(--lk, 1)); color: var(--ink); }
-  .t-hero h1 { font: 700 31cqw/.8 var(--cond); text-transform: uppercase; margin: 5cqw 0 0 -.03em; }
+  .t-hero h1 { font: 700 29cqw/.8 var(--cond); text-transform: uppercase; margin: 5cqw 0 0 -.03em; }
   .t-hero h1 span { display: block; }
   .t-hero h1 span + span { color: var(--dev); }
   .t-hero .tag { font: 500 5.4cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 4cqw; }
   .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2cqw; margin-top: auto; }
-  .chip { text-decoration: none; }
-  .chip img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px var(--line); }
-  .chip.killer img { object-position: 50% 36%; }
-  .chip.knife img { object-position: 50% 14%; }
-  .chip.slice img { object-position: 50% 8%; }
-  .chip span { display: block; margin-top: 1.4cqw; font-size: calc(clamp(8px, 2cqw, 11px) * var(--lk, 1)); line-height: 1.25; }
-  .chip span b { display: block; color: var(--dev); }
+  .chip { position: relative; text-decoration: none; }
+  .chip img { width: 100%; aspect-ratio: 1.25; object-fit: cover; object-position: 50% 6%; box-shadow: 0 0 0 1px var(--line); }
+  .chip.tracker img { object-position: 50% 0; }
+  .chip.killer img { object-position: 50% 20%; }
+  .chip span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .chip:hover img { box-shadow: 0 0 0 2px var(--dev); }
   .next { color: var(--dim); margin-top: 3.5cqw; }
 
@@ -155,6 +153,53 @@
   .sbtn { display: inline-block; padding: 2.2cqw 5.4cqw 2.5cqw; border-radius: 3cqw; background: #ffcf3a; color: #1d2a44; box-shadow: 0 1cqw 0 #1d2a44, 0 0 0 .5cqw #1d2a44; font: 400 4.2cqw/1 "Bowlby One", var(--cond); text-decoration: none; }
   .sbtn.w { background: #fff; }
   .sbtn:hover { transform: translateY(.4cqw); box-shadow: 0 .6cqw 0 #1d2a44, 0 0 0 .5cqw #1d2a44; }
+
+  /* Merge Drop and Mini Golf share Slice's chunky outlined style, in their own colours */
+  .chunk { color: var(--edge); font-family: "Nunito", var(--body); font-weight: 800; }
+  .chunk .top { color: var(--edge); opacity: .78; }
+  .chunk .top b { color: var(--tag, #fff); }
+  .chunk .ph { box-shadow: 0 1.1cqw 0 var(--edge), 0 0 0 .5cqw var(--edge); }
+  .chunk .toy { box-shadow: 0 1.1cqw 0 var(--edge), 0 0 0 .8cqw var(--btn); touch-action: none; }
+  .chunk .toy .cap { color: var(--edge); font: 400 2.8cqw/1 "Bowlby One", var(--cond); }
+  .chunk .glogo { font: 400 12.5cqw/.98 "Bowlby One", var(--cond); color: #fff; -webkit-text-stroke: .8cqw var(--edge); paint-order: stroke fill; text-shadow: 0 1.2cqw 0 var(--edge); transform: rotate(-3deg); transform-origin: 0 100%; margin-top: auto; }
+  .chunk .blurb { font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.35; margin: 3cqw 0 3.6cqw; }
+  .chunk .btns { margin-top: 0; }
+  .chunk .gbtn { display: inline-block; padding: 2.2cqw 5.4cqw 2.5cqw; border-radius: 3cqw; background: var(--btn); color: var(--btnink); box-shadow: 0 1cqw 0 var(--edge), 0 0 0 .5cqw var(--edge); font: 400 4.2cqw/1 "Bowlby One", var(--cond); text-decoration: none; }
+  .chunk .gbtn.w { background: #fff; color: var(--edge); }
+  .chunk .gbtn:hover { transform: translateY(.4cqw); box-shadow: 0 .6cqw 0 var(--edge), 0 0 0 .5cqw var(--edge); }
+  .t-merge { --edge: #1d1d1d; --btn: #ff4d6d; --btnink: #fff; --tag: #d92a4c;
+    background-image: radial-gradient(rgba(255, 255, 255, .34) 1.1cqw, transparent 1.2cqw); background-size: 6.2cqw 6.2cqw; background-color: var(--gate, #ffd43b); }
+  .t-golf { --edge: #22303f; --btn: #ffd23a; --btnink: #22303f; }
+
+  /* Brick Breaker: its own look (deep green, cream, brass, a serif) */
+  .t-brick { color: #f2e8d0; font-family: "Nunito", var(--body); font-weight: 800; }
+  .t-brick .top { color: #a9bfa8; }
+  .t-brick .top b { color: #e3b04b; }
+  .t-brick .ph { box-shadow: 0 0 0 .5cqw #a9bfa8; }
+  .t-brick .toy { box-shadow: 0 0 0 .8cqw #e3b04b; touch-action: none; }
+  .t-brick .toy .cap { color: #a9bfa8; }
+  .t-brick .glogo { font: 400 13cqw/1 "DM Serif Display", Georgia, serif; margin-top: auto; }
+  .t-brick .glogo em { color: #e3b04b; }
+  .t-brick .blurb { font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.35; margin: 2.4cqw 0 3.6cqw; }
+  .t-brick .btns { margin-top: 0; }
+  .t-brick .gbtn { display: inline-block; padding: 2.2cqw 6cqw 2.6cqw; border-radius: 2.2cqw; background: #e3b04b; color: #1f3a2e; font: 400 4.8cqw/1 "DM Serif Display", Georgia, serif; text-decoration: none; }
+  .t-brick .gbtn.w { background: none; color: #f2e8d0; box-shadow: inset 0 0 0 .5cqw #a9bfa8; }
+  .t-brick .gbtn:hover { background: #f2e8d0; color: #1f3a2e; box-shadow: none; }
+
+  /* Block Puzzle: its own look (navy, candy blocks, green and gold) */
+  .t-block { color: #dfe6ff; font-family: "Nunito", var(--body); font-weight: 800; }
+  .t-block .top { color: #9fb0ff; }
+  .t-block .top b { color: #ffcf3a; }
+  .t-block .ph { box-shadow: 0 1.1cqw 0 #0e1433; }
+  .t-block .toy { box-shadow: 0 1.1cqw 0 #0e1433, 0 0 0 .8cqw #ffcf3a; touch-action: none; }
+  .t-block .toy .cap { color: #9fb0ff; }
+  .t-block .glogo { font: 400 12cqw/1 "Lilita One", var(--cond); color: #fff; text-shadow: 0 1cqw 0 #0e1433; margin-top: auto; }
+  .t-block .glogo em { font-style: normal; color: #ffcf3a; }
+  .t-block .blurb { font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.35; margin: 2.4cqw 0 3.6cqw; }
+  .t-block .btns { margin-top: 0; }
+  .t-block .gbtn { display: inline-block; padding: 2.2cqw 6cqw 2.5cqw; border-radius: 4cqw; background: #3ccf68; color: #fff; box-shadow: 0 1cqw 0 #249a48; font: 400 4.6cqw/1 "Lilita One", var(--cond); text-decoration: none; }
+  .t-block .gbtn.w { background: #2c3a78; color: #dfe6ff; box-shadow: 0 1cqw 0 #0e1433; }
+  .t-block .gbtn:hover { transform: translateY(.4cqw); }
 
   /* any other project: plain */
   .t-plain h2, .t-contact h2 { font: 700 16.5cqw/.86 var(--cond); text-transform: uppercase; margin-top: auto; overflow-wrap: anywhere; }
@@ -242,6 +287,17 @@ setLabel();
 /* ---------- the page: one stop per gate. Gate 0 is the front door, the last one is contact. ---------- */
 const N = RF.projects.length, NS = N + 2;
 const top = (a, b) => `<div class="top mono"><span>${a}</span><b>${b}</b></div>`;
+const gameFace = (p, i, cls, logo, play, gh, toyHTML) => `<div class="in ${cls}">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <div class="phones">
+      <img class="ph a" src="${esc(p.shots.home)}" alt="${esc(p.title)}: the home screen">
+      <img class="ph b" src="${esc(p.shots.play)}" alt="${esc(p.title)}: in play">
+      ${toyHTML}
+    </div>
+    <h2 class="glogo" aria-label="${esc(p.title)}">${logo}</h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns"><a class="gbtn" href="${esc(p.url)}" target="_blank" rel="noopener">${play}</a>${p.repo ? `<a class="gbtn w" href="${esc(p.repo)}" target="_blank" rel="noopener">${gh}</a>` : ""}</div>
+  </div>`;
 const faceOf = {
   tracker: (p, i) => `<div class="in t-tracker">
     ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
@@ -290,6 +346,10 @@ const faceOf = {
     <p class="blurb">${esc(p.blurb)}</p>
     <div class="btns"><a class="sbtn" href="${esc(p.url)}" target="_blank" rel="noopener">PLAY IT</a>${p.repo ? `<a class="sbtn w" href="${esc(p.repo)}" target="_blank" rel="noopener">GITHUB</a>` : ""}</div>
   </div>`,
+  merge: (p, i) => gameFace(p, i, "chunk t-merge", "MERGE<br>DROP!", "PLAY IT", "GITHUB", '<button class="toy" id="toy-merge" type="button" aria-label="Drop a fruit into the jar"><canvas></canvas><span class="cap">TAP TO DROP</span></button>'),
+  golf: (p, i) => gameFace(p, i, "chunk t-golf", "MINI<br>GOLF!", "PLAY IT", "GITHUB", '<div class="toy" id="toy-golf" role="img" aria-label="Pull back from the ball and let go to putt"><canvas></canvas><span class="cap">PULL BACK, LET GO</span></div>'),
+  brick: (p, i) => gameFace(p, i, "t-brick", "Brick <em>Breaker</em>", "Play it", "GitHub", '<div class="toy" id="toy-brick" role="img" aria-label="Move across to steer the paddle"><canvas></canvas><span class="cap">move to steer</span></div>'),
+  block: (p, i) => gameFace(p, i, "t-block", "BLOCK <em>PUZZLE</em>", "PLAY IT", "GITHUB", '<button class="toy" id="toy-block" type="button" aria-label="Tap a square to place the piece"><canvas></canvas><span class="cap">tap a square</span></button>'),
   plain: (p, i) => `<div class="in t-plain">
     ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
     <h2>${esc(p.title)}</h2>
@@ -311,7 +371,7 @@ $("#stops").innerHTML = `
     ${top(esc(RF.domain), esc(RF.place))}
     <h1 aria-label="${esc(RF.name)}"><span>${esc(RF.name.slice(0, half))}</span><span>${esc(RF.name.slice(half))}</span></h1>
     <p class="tag">${esc(RF.tagline)}</p>
-    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}">
+    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}" title="${esc(p.title)}">
       <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>
     <div class="next mono sm">Scroll: the gate lifts &darr;</div>
   </div></div></section>` +
@@ -456,6 +516,140 @@ function toy(host, draw) {
   });
   host.addEventListener("pointerleave", () => { trail = []; });
 })();
+// Merge Drop: tap to drop a fruit; two of a kind that touch become the next size up.
+(function mergeToy() {
+  const host = $("#toy-merge"); if (!host) return;
+  const INK = "#1d1d1d", TAU = Math.PI * 2, COL = ["#e63946", "#ff6f8a", "#8e4fd0", "#ff9a1f", "#ff6b2b", "#c8d94a", "#3fa34d"];
+  let balls = [], next = 0, aim = 0.5, score = 0;
+  const cv = toy(host, (c, w, h, dt) => {
+    const L = w * 0.07, Rt = w * 0.93, top = h * 0.24, floor = h * 0.84, rad = (k) => w * (0.075 + 0.036 * k), G = h * 2.4;
+    c.fillStyle = "#ffd43b"; c.fillRect(0, 0, w, h);
+    c.fillStyle = "#fff"; c.fillRect(L, top, Rt - L, floor - top);
+    for (const b of balls) { b.vy += G * dt; b.x += b.vx * dt; b.y += b.vy * dt; const r = rad(b.k);
+      if (b.y > floor - r) { b.y = floor - r; b.vy *= -0.15; b.vx *= 0.92; }
+      if (b.x < L + r) { b.x = L + r; b.vx *= -0.3; } if (b.x > Rt - r) { b.x = Rt - r; b.vx *= -0.3; } }
+    for (let pass = 0; pass < 3; pass++) for (let i = 0; i < balls.length; i++) for (let j = i + 1; j < balls.length; j++) {
+      const a = balls[i], b = balls[j]; if (a.dead || b.dead) continue;
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.01, min = rad(a.k) + rad(b.k);
+      if (d >= min) continue;
+      if (a.k === b.k && a.k < COL.length - 1) { a.dead = b.dead = true; balls.push({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, vx: 0, vy: 0, k: a.k + 1 }); score += a.k + 1; continue; }
+      const nx = dx / d, ny = dy / d, push = (min - d) / 2;
+      a.x -= nx * push; a.y -= ny * push; b.x += nx * push; b.y += ny * push;
+      const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+      if (rel < 0) { a.vx += nx * rel * 0.5; a.vy += ny * rel * 0.5; b.vx -= nx * rel * 0.5; b.vy -= ny * rel * 0.5; }
+    }
+    balls = balls.filter((b) => !b.dead);
+    if (balls.some((b) => b.y - rad(b.k) < top && Math.abs(b.vy) < 20) && balls.length > 6) { balls = []; score = 0; } // jar is full: start over
+    c.lineWidth = w * 0.016; c.strokeStyle = INK;
+    const fruit = (x, y, k, alpha) => { c.globalAlpha = alpha; c.fillStyle = COL[k]; c.beginPath(); c.arc(x, y, rad(k), 0, TAU); c.fill(); c.stroke(); c.fillStyle = "rgba(255,255,255,.4)"; c.beginPath(); c.ellipse(x - rad(k) * 0.35, y - rad(k) * 0.4, rad(k) * 0.2, rad(k) * 0.12, -0.6, 0, TAU); c.fill(); c.globalAlpha = 1; };
+    for (const b of balls) fruit(b.x, b.y, b.k, 1);
+    fruit(clamp(aim * w, L + rad(next), Rt - rad(next)), top - rad(next) - w * 0.02, next, 0.9);
+    c.beginPath(); c.moveTo(L, top); c.lineTo(L, floor); c.lineTo(Rt, floor); c.lineTo(Rt, top); c.lineWidth = w * 0.022; c.stroke();
+    c.font = `400 ${w * 0.15}px "Bowlby One", sans-serif`; c.textBaseline = "top"; c.lineJoin = "round"; c.lineWidth = w * 0.04; c.strokeText(score, w * 0.07, w * 0.04); c.fillStyle = "#fff"; c.fillText(score, w * 0.07, w * 0.04);
+  });
+  host.addEventListener("pointermove", (e) => { aim = e.offsetX / cv.clientWidth; });
+  host.addEventListener("click", (e) => {
+    const w = cv.clientWidth, h = cv.clientHeight, r = w * (0.075 + 0.036 * next);
+    if (e.detail) aim = e.offsetX / w;
+    balls.push({ x: clamp(aim * w, w * 0.07 + r, w * 0.93 - r), y: h * 0.24 - r, vx: (Math.random() - 0.5) * 6, vy: 0, k: next });
+    next = (Math.random() * 3) | 0;
+  });
+})();
+// Mini Golf: press, pull back, let go. Slow enough over the hole and it drops.
+(function golfToy() {
+  const host = $("#toy-golf"); if (!host) return;
+  const INK = "#22303f", TAU = Math.PI * 2;
+  let ball = null, pull = null, strokes = 0, sunk = 0, holes = 0;
+  const cv = toy(host, (c, w, h, dt) => {
+    const L = w * 0.12, Rt = w * 0.88, T = h * 0.2, Bm = h * 0.84, r = w * 0.045, hx = w * 0.5, hy = h * 0.3;
+    if (!ball) ball = { x: w * 0.5, y: h * 0.72, vx: 0, vy: 0 };
+    c.fillStyle = "#5ec8f2"; c.fillRect(0, 0, w, h);
+    c.fillStyle = "#c98b55"; c.strokeStyle = INK; c.lineWidth = w * 0.016; c.beginPath(); c.roundRect(L - w * 0.04, T - w * 0.04, Rt - L + w * 0.08, Bm - T + w * 0.08, w * 0.03); c.fill(); c.stroke();
+    for (let i = 0, n = 9; i < n; i++) { c.fillStyle = i % 2 ? "#5dc95f" : "#52bb55"; c.fillRect(L, T + (Bm - T) * i / n, Rt - L, (Bm - T) / n + 1); }
+    c.strokeRect(L, T, Rt - L, Bm - T);
+    c.fillStyle = INK; c.beginPath(); c.ellipse(hx, hy, r * 1.5, r * 1.2, 0, 0, TAU); c.fill();
+    c.fillRect(hx - w * 0.008, hy - h * 0.13, w * 0.016, h * 0.13); c.fillStyle = "#ff4d4d"; c.beginPath(); c.moveTo(hx + w * 0.008, hy - h * 0.13); c.lineTo(hx + w * 0.13, hy - h * 0.105); c.lineTo(hx + w * 0.008, hy - h * 0.08); c.closePath(); c.fill(); c.stroke();
+    if (sunk > 0) { sunk -= dt; if (sunk <= 0) { ball = { x: w * (0.3 + Math.random() * 0.4), y: h * 0.72, vx: 0, vy: 0 }; strokes = 0; } }
+    else {
+      ball.x += ball.vx * dt; ball.y += ball.vy * dt; const k = Math.exp(-1.7 * dt); ball.vx *= k; ball.vy *= k;
+      if (ball.x < L + r) { ball.x = L + r; ball.vx = Math.abs(ball.vx) * 0.8; } if (ball.x > Rt - r) { ball.x = Rt - r; ball.vx = -Math.abs(ball.vx) * 0.8; }
+      if (ball.y < T + r) { ball.y = T + r; ball.vy = Math.abs(ball.vy) * 0.8; } if (ball.y > Bm - r) { ball.y = Bm - r; ball.vy = -Math.abs(ball.vy) * 0.8; }
+      const sp = Math.hypot(ball.vx, ball.vy);
+      if (sp < w * 0.03) ball.vx = ball.vy = 0;
+      if (Math.hypot(ball.x - hx, ball.y - hy) < r * 1.3 && sp < w * 2.4) { sunk = 0.7; holes++; }
+      if (pull) { c.setLineDash([w * 0.03, w * 0.03]); c.strokeStyle = "#fff"; c.lineWidth = w * 0.02; c.beginPath(); c.moveTo(ball.x, ball.y); c.lineTo(ball.x + (pull.x0 - pull.x) * 1.2, ball.y + (pull.y0 - pull.y) * 1.2); c.stroke(); c.setLineDash([]); c.strokeStyle = INK; c.lineWidth = w * 0.016; }
+      c.fillStyle = "#fff"; c.beginPath(); c.arc(ball.x, ball.y, r, 0, TAU); c.fill(); c.stroke();
+    }
+    c.font = `400 ${w * 0.085}px "Bowlby One", sans-serif`; c.textBaseline = "top"; c.lineJoin = "round"; c.lineWidth = w * 0.03; const txt = `HOLES ${holes}`; c.strokeText(txt, w * 0.07, w * 0.06); c.fillStyle = "#fff"; c.fillText(txt, w * 0.07, w * 0.06);
+  });
+  host.addEventListener("pointerdown", (e) => { if (ball && !ball.vx && !ball.vy && sunk <= 0) { pull = { x0: e.offsetX, y0: e.offsetY, x: e.offsetX, y: e.offsetY }; host.setPointerCapture(e.pointerId); } });
+  host.addEventListener("pointermove", (e) => { if (pull) { pull.x = e.offsetX; pull.y = e.offsetY; } });
+  const release = () => { if (!pull) return; const k = 5.5, m = cv.clientWidth * 3.2; ball.vx = clamp((pull.x0 - pull.x) * k, -m, m); ball.vy = clamp((pull.y0 - pull.y) * k, -m, m); if (ball.vx || ball.vy) strokes++; pull = null; };
+  host.addEventListener("pointerup", release); host.addEventListener("pointercancel", () => { pull = null; });
+})();
+// Brick Breaker: the paddle follows your pointer; left alone it plays by itself.
+(function brickToy() {
+  const host = $("#toy-brick"); if (!host) return;
+  const COL = ["#f2e8d0", "#e3b04b", "#c4623c", "#7fa37a"], TAU = Math.PI * 2;
+  let bricks = [], ball = null, pad = 0.5, hand = 0, score = 0;
+  const cv = toy(host, (c, w, h, dt) => {
+    const cols = 5, rows = 4, bw = w * 0.16, bh = h * 0.045, gx0 = w * 0.07, gy0 = h * 0.2, pw = w * 0.3, py = h * 0.84, r = w * 0.03, speed = h * 0.62;
+    if (!bricks.length) for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) bricks.push({ x: gx0 + x * (bw + w * 0.015), y: gy0 + y * (bh + w * 0.015), k: (x + y) % 4 });
+    if (!ball) ball = { x: w * 0.5, y: py - r * 2, vx: speed * 0.5, vy: -speed * 0.86 };
+    hand -= dt; if (hand <= 0) pad += clamp(ball.x / w - pad, -dt * 1.1, dt * 1.1);
+    const px = clamp(pad * w, pw / 2 + w * 0.03, w - pw / 2 - w * 0.03);
+    ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+    if (ball.x < r + w * 0.03) { ball.x = r + w * 0.03; ball.vx = Math.abs(ball.vx); } if (ball.x > w - r - w * 0.03) { ball.x = w - r - w * 0.03; ball.vx = -Math.abs(ball.vx); }
+    if (ball.y < h * 0.12 + r) { ball.y = h * 0.12 + r; ball.vy = Math.abs(ball.vy); }
+    if (ball.vy > 0 && ball.y > py - r && ball.y < py + h * 0.03 && Math.abs(ball.x - px) < pw / 2 + r) { const t = clamp((ball.x - px) / (pw / 2), -1, 1) * 1.05; ball.vx = Math.sin(t) * speed; ball.vy = -Math.cos(t) * speed; }
+    if (ball.y > h + r) ball = null;
+    else for (const b of bricks) if (ball.x > b.x - r && ball.x < b.x + bw + r && ball.y > b.y - r && ball.y < b.y + bh + r) { b.dead = true; score++; ball.vy = -ball.vy; break; }
+    bricks = bricks.filter((b) => !b.dead);
+    c.fillStyle = "#1f3a2e"; c.fillRect(0, 0, w, h);
+    c.strokeStyle = "rgba(169,191,168,.5)"; c.lineWidth = w * 0.012; c.strokeRect(w * 0.03, h * 0.12, w * 0.94, h);
+    for (const b of bricks) { c.fillStyle = COL[b.k]; c.beginPath(); c.roundRect(b.x, b.y, bw, bh, w * 0.012); c.fill(); }
+    c.fillStyle = "#e3b04b"; c.beginPath(); c.roundRect(px - pw / 2, py, pw, h * 0.028, h * 0.014); c.fill();
+    if (ball) { c.fillStyle = "#f2e8d0"; c.beginPath(); c.arc(ball.x, ball.y, r, 0, TAU); c.fill(); }
+    c.fillStyle = "#f2e8d0"; c.font = `400 ${w * 0.13}px "DM Serif Display", serif`; c.textBaseline = "top"; c.fillText(score, w * 0.07, w * 0.03);
+  });
+  host.addEventListener("pointermove", (e) => { pad = e.offsetX / cv.clientWidth; hand = 2.5; });
+})();
+// Block Puzzle: tap a square to set the piece there. A full row or column clears.
+(function blockToy() {
+  const host = $("#toy-block"); if (!host) return;
+  const N6 = 6, COL = ["#ff5d6c", "#35c2ff", "#ffcf3a", "#4fdc7a"];
+  const SHAPES = [[[0, 0], [1, 0]], [[0, 0], [0, 1]], [[0, 0], [1, 0], [2, 0]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [1, 0], [0, 1]], [[0, 0], [1, 0], [0, 1], [1, 1]], [[0, 0]], [[1, 0], [0, 1], [1, 1]]];
+  let grid = Array(N6 * N6).fill(-1), piece = null, hover = null, score = 0, geo = null;
+  const fresh = () => ({ s: SHAPES[(Math.random() * SHAPES.length) | 0], k: (Math.random() * COL.length) | 0 });
+  const fits = (p, cx, cy) => p.s.every(([x, y]) => cx + x >= 0 && cx + x < N6 && cy + y >= 0 && cy + y < N6 && grid[(cy + y) * N6 + cx + x] < 0);
+  const anywhere = (p) => { for (let y = 0; y < N6; y++) for (let x = 0; x < N6; x++) if (fits(p, x, y)) return true; return false; };
+  piece = fresh();
+  const cell = (e) => geo && { x: Math.floor((e.offsetX - geo.x0) / geo.cs), y: Math.floor((e.offsetY - geo.y0) / geo.cs) };
+  const cv = toy(host, (c, w, h) => {
+    const cs = w * 0.14, x0 = (w - cs * N6) / 2, y0 = h * 0.2; geo = { cs, x0, y0 };
+    c.fillStyle = "#1d2759"; c.fillRect(0, 0, w, h);
+    c.fillStyle = "#141c45"; c.beginPath(); c.roundRect(x0 - w * 0.025, y0 - w * 0.025, cs * N6 + w * 0.05, cs * N6 + w * 0.05, w * 0.03); c.fill();
+    const block = (x, y, k, a) => { c.globalAlpha = a; c.fillStyle = k < 0 ? "#1b2452" : COL[k]; c.beginPath(); c.roundRect(x + cs * 0.06, y + cs * 0.06, cs * 0.88, cs * 0.88, cs * 0.16); c.fill(); if (k >= 0) { c.fillStyle = "rgba(255,255,255,.3)"; c.beginPath(); c.roundRect(x + cs * 0.18, y + cs * 0.14, cs * 0.64, cs * 0.12, cs * 0.06); c.fill(); } c.globalAlpha = 1; };
+    for (let y = 0; y < N6; y++) for (let x = 0; x < N6; x++) block(x0 + x * cs, y0 + y * cs, grid[y * N6 + x], 1);
+    if (hover && fits(piece, hover.x, hover.y)) for (const [x, y] of piece.s) block(x0 + (hover.x + x) * cs, y0 + (hover.y + y) * cs, piece.k, 0.5);
+    const tw = Math.max(...piece.s.map((q) => q[0])) + 1, ty = y0 + cs * N6 + h * 0.045, ps = cs * 0.8;
+    c.save(); c.translate((w - tw * ps) / 2, ty); c.scale(0.8, 0.8); for (const [x, y] of piece.s) block(x * cs, y * cs, piece.k, 1); c.restore();
+    c.fillStyle = "#fff"; c.font = `400 ${w * 0.14}px "Lilita One", sans-serif`; c.textBaseline = "top"; c.fillText(score, w * 0.08, w * 0.035);
+  });
+  host.addEventListener("pointermove", (e) => { hover = cell(e); });
+  host.addEventListener("pointerleave", () => { hover = null; });
+  host.addEventListener("click", (e) => {
+    const at = cell(e); if (!at || !fits(piece, at.x, at.y)) return;
+    for (const [x, y] of piece.s) grid[(at.y + y) * N6 + at.x + x] = piece.k;
+    const rows = [], cols = [];
+    for (let i = 0; i < N6; i++) { if ([...Array(N6)].every((_, x) => grid[i * N6 + x] >= 0)) rows.push(i); if ([...Array(N6)].every((_, y) => grid[y * N6 + i] >= 0)) cols.push(i); }
+    for (const r of rows) for (let x = 0; x < N6; x++) grid[r * N6 + x] = -1;
+    for (const cl of cols) for (let y = 0; y < N6; y++) grid[y * N6 + cl] = -1;
+    score += rows.length + cols.length;
+    piece = fresh();
+    if (!anywhere(piece)) { grid.fill(-1); score = 0; } // no room left: start over
+  });
+})();
 document.addEventListener("click", (e) => {
   const t = e.target.closest("[data-copy]"); if (!t) return;
   const done = () => { const l = t.querySelector(".a"); l.textContent = `Copied: ${t.dataset.copy}`; setTimeout(() => { l.textContent = "Copy name"; }, 2200); };
@@ -482,7 +676,9 @@ for (let k = 0; k < NS; k++) {
 // page section laid over it (see the loop), so the texture only needs the slab itself.
 const DARKG = { bg: [18, 19, 20], a: "#e8792b", b: "#121314", glow: [1.0, 0.56, 0.22] };
 const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [10, 10, 10], a: "#ff5a2b", b: "#0a0a0a", glow: [1.0, 0.36, 0.16] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] },
-  knife: { bg: [255, 233, 214], a: "#ff6b6b", b: "#3d2c4f", glow: [1.0, 0.76, 0.6] }, slice: { bg: [62, 198, 192], a: "#ffcf3a", b: "#1d2a44", glow: [0.3, 0.9, 0.86] } };
+  knife: { bg: [255, 233, 214], a: "#ff6b6b", b: "#3d2c4f", glow: [1.0, 0.76, 0.6] }, slice: { bg: [62, 198, 192], a: "#ffcf3a", b: "#1d2a44", glow: [0.3, 0.9, 0.86] },
+  merge: { bg: [255, 212, 59], a: "#ff4d6d", b: "#1d1d1d", glow: [1.0, 0.84, 0.3] }, golf: { bg: [94, 200, 242], a: "#ffd23a", b: "#22303f", glow: [0.42, 0.78, 1.0] },
+  brick: { bg: [31, 58, 46], a: "#e3b04b", b: "#1f3a2e", glow: [0.5, 0.78, 0.5] }, block: { bg: [29, 39, 89], a: "#ffcf3a", b: "#141c45", glow: [0.42, 0.52, 1.0] } };
 faces.forEach((fc, k) => {
   const th = THEME[themeOf(k)];
   fc.style.setProperty("--gate", `rgb(${th.bg})`); fc.style.setProperty("--sa", th.a); fc.style.setProperty("--sb", th.b);
