@@ -28,6 +28,22 @@ window.RF = {
         ["PARANOIA", "watched"], ["GLOBE", "spun"], ["KEY", "unlock"], ["ANT", "tiny"], ["GHOST", "haunt"], ["CAR", "drive"], ["TRUMPET", "blare"], ["TENT", "shelter"],
         ["DEER", "graze"], ["RACCOON", "sneaky"]],
     },
+    {
+      id: "knife", title: "Knife Throw", theme: "knife", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Tap to throw, don't hit a knife. Beat a boss to win a new knife, and every knife has its own ability.",
+      url: "https://thekillergame.github.io/knife-throw/",
+      repo: "https://github.com/TheKillerGame/knife-throw",
+      shots: { home: "media/knife-home.jpg", play: "media/knife-play.jpg" },
+    },
+    {
+      id: "slice", title: "Slice", theme: "slice", kind: "Phone game", year: 2026, status: "PLAYABLE",
+      stack: "One HTML file",
+      blurb: "Swipe the fruit, skip the bombs. Every tenth wave is a boss, and beating it opens a new world.",
+      url: "https://thekillergame.github.io/slice/",
+      repo: "https://github.com/TheKillerGame/slice",
+      shots: { home: "media/slice-home.jpg", play: "media/slice-play2.jpg" },
+    },
   ],
   // The handles from the Killer Game README. To add email: { label: "Email", value: "...", url: "mailto:..." }
   contact: [

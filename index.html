@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RisingForce</title>
-<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker and The Killer Game.">
+<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker, The Killer Game, Knife Throw and Slice.">
 <meta property="og:title" content="RisingForce">
 <meta property="og:description" content="Sites and games, built from scratch.">
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
     --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -62,12 +62,14 @@
   .t-hero h1 span { display: block; }
   .t-hero h1 span + span { color: var(--dev); }
   .t-hero .tag { font: 500 5.4cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 4cqw; }
-  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; margin-top: auto; }
+  .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2cqw; margin-top: auto; }
   .chip { text-decoration: none; }
-  .chip img { width: 100%; aspect-ratio: 1.6; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px var(--line); }
-  .chip.k img { object-position: 50% 36%; }
-  .chip span { display: flex; justify-content: space-between; margin-top: 1.6cqw; font-size: clamp(9px, 2.4cqw, 13px); }
-  .chip span b { color: var(--dev); font-weight: 500; }
+  .chip img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px var(--line); }
+  .chip.killer img { object-position: 50% 36%; }
+  .chip.knife img { object-position: 50% 14%; }
+  .chip.slice img { object-position: 50% 8%; }
+  .chip span { display: block; margin-top: 1.4cqw; font-size: calc(clamp(8px, 2cqw, 11px) * var(--lk, 1)); line-height: 1.25; }
+  .chip span b { display: block; color: var(--dev); }
   .chip:hover img { box-shadow: 0 0 0 2px var(--dev); }
   .next { color: var(--dim); margin-top: 3.5cqw; }
 
@@ -118,6 +120,41 @@
   .kbtn { display: inline-block; padding: 2.2cqw 5.4cqw 2.5cqw; border-radius: 4cqw; background: var(--y); color: var(--edge); box-shadow: 0 1cqw 0 var(--edge); font: 400 4.6cqw/1 "Lilita One", var(--cond); text-decoration: none; }
   .kbtn.w { background: #fff; color: var(--p); }
   .kbtn:hover { transform: translateY(.4cqw); box-shadow: 0 .6cqw 0 var(--edge); }
+
+  /* the third "phone" on a game gate is a small live version of the game */
+  .toy { position: relative; display: block; width: 31cqw; aspect-ratio: .62; padding: 0; border-radius: 3.4cqw; overflow: hidden; transform: rotate(4deg); }
+  .toy canvas { display: block; width: 100%; height: 100%; }
+  .toy .cap { position: absolute; left: 0; right: 0; bottom: 2.4cqw; text-align: center; font-size: 2.7cqw; pointer-events: none; }
+
+  /* Knife Throw: its own look (peach, plum, coral, round and flat) */
+  .t-knife { color: #3d2c4f; font-family: "Fredoka", var(--body); font-weight: 600; }
+  .t-knife .top { color: #9a8a8a; }
+  .t-knife .top b { color: #ff6b6b; }
+  .t-knife .ph { box-shadow: 0 0 0 .6cqw #3d2c4f; }
+  .t-knife .toy { box-shadow: 0 0 0 .8cqw #ff6b6b; background: #ffe9d6; }
+  .t-knife .toy .cap { color: #9a8a8a; font-weight: 600; }
+  .knlogo { font: 700 14cqw/.9 "Fredoka", var(--body); margin-top: auto; }
+  .knlogo span { color: #ff6b6b; }
+  .t-knife .blurb { font-size: clamp(12px, 3.6cqw, 21px); font-weight: 500; line-height: 1.35; margin: 2.4cqw 0 3.6cqw; }
+  .t-knife .btns { margin-top: 0; }
+  .fbtn { display: inline-block; padding: 2.3cqw 6cqw 2.7cqw; border-radius: 9cqw; background: #3d2c4f; color: #ffe9d6; font: 600 4.6cqw/1 "Fredoka", var(--body); text-decoration: none; }
+  .fbtn.g { background: none; color: #3d2c4f; box-shadow: inset 0 0 0 .6cqw #3d2c4f; }
+  .fbtn:hover { background: #ff6b6b; color: #fff; box-shadow: none; }
+
+  /* Slice: its own look (teal, yellow, thick outlines) */
+  .t-slice { color: #1d2a44; font-family: "Nunito", var(--body); font-weight: 800;
+    background-image: radial-gradient(rgba(255, 255, 255, .2) 1.1cqw, transparent 1.2cqw); background-size: 6.2cqw 6.2cqw; background-color: var(--gate, #3ec6c0); }
+  .t-slice .top { color: rgba(29, 42, 68, .72); }
+  .t-slice .top b { color: #fff; }
+  .t-slice .ph { box-shadow: 0 1.1cqw 0 #1d2a44, 0 0 0 .5cqw #1d2a44; }
+  .t-slice .toy { box-shadow: 0 1.1cqw 0 #1d2a44, 0 0 0 .8cqw #ffcf3a; background: #3ec6c0; touch-action: none; cursor: crosshair; }
+  .t-slice .toy .cap { color: #fff; font: 400 2.9cqw/1 "Bowlby One", var(--cond); }
+  .sllogo { font: 400 17cqw/.95 "Bowlby One", var(--cond); color: #fff; -webkit-text-stroke: .9cqw #1d2a44; paint-order: stroke fill; text-shadow: 0 1.3cqw 0 #1d2a44; transform: rotate(-4deg); transform-origin: 0 100%; margin-top: auto; }
+  .t-slice .blurb { font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.35; margin: 3cqw 0 3.6cqw; }
+  .t-slice .btns { margin-top: 0; }
+  .sbtn { display: inline-block; padding: 2.2cqw 5.4cqw 2.5cqw; border-radius: 3cqw; background: #ffcf3a; color: #1d2a44; box-shadow: 0 1cqw 0 #1d2a44, 0 0 0 .5cqw #1d2a44; font: 400 4.2cqw/1 "Bowlby One", var(--cond); text-decoration: none; }
+  .sbtn.w { background: #fff; }
+  .sbtn:hover { transform: translateY(.4cqw); box-shadow: 0 .6cqw 0 #1d2a44, 0 0 0 .5cqw #1d2a44; }
 
   /* any other project: plain */
   .t-plain h2, .t-contact h2 { font: 700 16.5cqw/.86 var(--cond); text-transform: uppercase; margin-top: auto; overflow-wrap: anywhere; }
@@ -231,6 +268,28 @@ const faceOf = {
     <p class="blurb">${esc(p.blurb)}</p>
     <div class="btns"><a class="kbtn" href="${esc(p.url)}" target="_blank" rel="noopener">PLAY IT</a>${p.repo ? `<a class="kbtn w" href="${esc(p.repo)}" target="_blank" rel="noopener">GITHUB</a>` : ""}</div>
   </div>`,
+  knife: (p, i) => `<div class="in t-knife">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <div class="phones">
+      <img class="ph a" src="${esc(p.shots.home)}" alt="${esc(p.title)}: the home screen">
+      <img class="ph b" src="${esc(p.shots.play)}" alt="${esc(p.title)}: three knives in the target">
+      <button class="toy" id="toy-knife" type="button" aria-label="Throw a knife at the spinning target"><canvas></canvas><span class="cap">tap to throw</span></button>
+    </div>
+    <h2 class="knlogo">knife <span>throw</span></h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns"><a class="fbtn" href="${esc(p.url)}" target="_blank" rel="noopener">play it</a>${p.repo ? `<a class="fbtn g" href="${esc(p.repo)}" target="_blank" rel="noopener">github</a>` : ""}</div>
+  </div>`,
+  slice: (p, i) => `<div class="in t-slice">
+    ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
+    <div class="phones">
+      <img class="ph a" src="${esc(p.shots.home)}" alt="${esc(p.title)}: the home screen">
+      <img class="ph b" src="${esc(p.shots.play)}" alt="${esc(p.title)}: fruit in the air">
+      <div class="toy" id="toy-slice" role="img" aria-label="Swipe across the fruit to slice it"><canvas></canvas><span class="cap">SWIPE THE FRUIT</span></div>
+    </div>
+    <h2 class="sllogo">SLICE!</h2>
+    <p class="blurb">${esc(p.blurb)}</p>
+    <div class="btns"><a class="sbtn" href="${esc(p.url)}" target="_blank" rel="noopener">PLAY IT</a>${p.repo ? `<a class="sbtn w" href="${esc(p.repo)}" target="_blank" rel="noopener">GITHUB</a>` : ""}</div>
+  </div>`,
   plain: (p, i) => `<div class="in t-plain">
     ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
     <h2>${esc(p.title)}</h2>
@@ -252,7 +311,7 @@ $("#stops").innerHTML = `
     ${top(esc(RF.domain), esc(RF.place))}
     <h1 aria-label="${esc(RF.name)}"><span>${esc(RF.name.slice(0, half))}</span><span>${esc(RF.name.slice(half))}</span></h1>
     <p class="tag">${esc(RF.tagline)}</p>
-    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${p.theme === "killer" ? "k" : ""}" href="#${esc(p.id)}">
+    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}">
       <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>
     <div class="next mono sm">Scroll: the gate lifts &darr;</div>
   </div></div></section>` +
@@ -315,6 +374,88 @@ if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
   }
   btn.addEventListener("click", () => draw(false)); draw(true);
 })();
+// The game gates' toys: small live versions drawn on a canvas. They only run while their gate is in view.
+function toy(host, draw) {
+  const cv = host.querySelector("canvas"), c = cv.getContext("2d"), face = host.closest(".face");
+  let last = 0;
+  const loop = (now) => {
+    requestAnimationFrame(loop);
+    if (!face.classList.contains("vis") && !document.body.classList.contains("no3d")) { last = 0; return; }
+    const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+    if (!w) return;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    const dt = last ? Math.min((now - last) / 1000, 0.05) : 0; last = now;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0); draw(c, w, h, dt);
+  };
+  requestAnimationFrame(loop);
+  return cv;
+}
+// Knife Throw: the target turns, a tap throws. Land on a knife that is already there and you start over.
+(function knifeToy() {
+  const host = $("#toy-knife"); if (!host) return;
+  const INK = "#3d2c4f", TAU = Math.PI * 2;
+  let ang = 0, stuck = [0.7, 2.6, 4.4], fly = -1, flash = 0, score = 0;
+  toy(host, (c, w, h, dt) => {
+    ang = (ang + dt * 1.5) % TAU; flash = Math.max(0, flash - dt * 2.5);
+    const cx = w / 2, cy = h * 0.37, R = w * 0.27, L = w * 0.32;
+    c.fillStyle = flash > 0 ? "#ffcfc8" : "#ffe9d6"; c.fillRect(0, 0, w, h);
+    const knife = (x, y, rot) => { // origin at the guard, tip towards local "up"
+      c.save(); c.translate(x, y); c.rotate(rot);
+      c.fillStyle = "#fff"; c.strokeStyle = INK; c.lineWidth = w * 0.014; c.lineJoin = "round";
+      c.beginPath(); c.moveTo(-L * 0.1, 0); c.lineTo(-L * 0.1, -L * 0.42); c.lineTo(0, -L * 0.56); c.lineTo(L * 0.1, -L * 0.42); c.lineTo(L * 0.1, 0); c.closePath(); c.fill(); c.stroke();
+      c.fillStyle = INK; c.beginPath(); c.roundRect(-L * 0.16, 0, L * 0.32, L * 0.07, L * 0.03); c.fill();
+      c.beginPath(); c.roundRect(-L * 0.085, L * 0.07, L * 0.17, L * 0.36, L * 0.085); c.fill();
+      c.restore();
+    };
+    for (const a of stuck) { const th = a + ang; knife(cx + Math.cos(th) * (R + L * 0.22), cy + Math.sin(th) * (R + L * 0.22), th - Math.PI / 2); }
+    for (const [k, col] of [[1, "#ff6b6b"], [0.78, "#ffb0a6"], [0.56, "#ff6b6b"], [0.34, "#ffd3c9"], [0.12, INK]]) { c.fillStyle = col; c.beginPath(); c.arc(cx, cy, R * k, 0, TAU); c.fill(); }
+    if (fly >= 0) {
+      fly += dt / 0.11;
+      if (fly >= 1) {
+        const at = ((Math.PI / 2 - ang) % TAU + TAU) % TAU; // where on the target the knife lands
+        const hit = stuck.some((a) => { const d = Math.abs(a - at) % TAU; return Math.min(d, TAU - d) < 0.36; });
+        if (hit) { stuck = []; score = 0; flash = 1; } else { stuck.push(at); score++; if (stuck.length > 8) stuck = []; }
+        fly = -1;
+      } else knife(cx, mix(h * 0.8, cy + R + L * 0.22, fly), 0);
+    }
+    if (fly < 0) knife(cx, h * 0.8, 0);
+    c.fillStyle = INK; c.font = `700 ${w * 0.17}px "Fredoka", sans-serif`; c.textBaseline = "top"; c.fillText(score, w * 0.08, w * 0.05);
+  });
+  host.addEventListener("click", () => { if (fly < 0) fly = 0; });
+})();
+// Slice: fruit is thrown up; cross it with the pointer (or a finger) and it falls in two.
+(function sliceToy() {
+  const host = $("#toy-slice"); if (!host) return;
+  const INK = "#1d2a44", TAU = Math.PI * 2, KINDS = [["#ff9a1f", "#ffd9a0"], ["#3fa34d", "#ff6f6f"], ["#e9455b", "#fff1d6"], ["#7b3fc4", "#e7d3ff"]];
+  let fruit = [], halves = [], trail = [], wait = 0.3, score = 0;
+  const cv = toy(host, (c, w, h, dt) => {
+    const G = h * 1.5;
+    c.fillStyle = "#3ec6c0"; c.fillRect(0, 0, w, h);
+    c.fillStyle = "rgba(255,255,255,.18)"; for (let y = w * 0.1; y < h; y += w * 0.2) for (let x = w * 0.1; x < w; x += w * 0.2) { c.beginPath(); c.arc(x, y, w * 0.022, 0, TAU); c.fill(); }
+    wait -= dt;
+    if (wait <= 0 && fruit.length < 3) { wait = 0.75; fruit.push({ x: w * (0.22 + Math.random() * 0.56), y: h + w * 0.12, vx: (Math.random() - 0.5) * w * 0.3, vy: -h * (1.3 + Math.random() * 0.22), r: w * 0.12, k: KINDS[(Math.random() * KINDS.length) | 0] }); }
+    c.lineWidth = w * 0.016; c.strokeStyle = INK;
+    fruit = fruit.filter((f) => { f.vy += G * dt; f.x += f.vx * dt; f.y += f.vy * dt; return !(f.vy > 0 && f.y > h + f.r * 2); });
+    for (const f of fruit) { c.fillStyle = f.k[0]; c.beginPath(); c.arc(f.x, f.y, f.r, 0, TAU); c.fill(); c.stroke(); c.fillStyle = "rgba(255,255,255,.45)"; c.beginPath(); c.ellipse(f.x - f.r * 0.35, f.y - f.r * 0.4, f.r * 0.2, f.r * 0.12, -0.6, 0, TAU); c.fill(); }
+    halves = halves.filter((f) => { f.vy += G * dt; f.x += f.vx * dt; f.y += f.vy * dt; f.rot += f.vr * dt; return f.y < h + f.r * 2; });
+    for (const f of halves) { c.save(); c.translate(f.x, f.y); c.rotate(f.rot); c.fillStyle = f.k[1]; c.beginPath(); c.arc(0, 0, f.r, 0, Math.PI); c.closePath(); c.fill(); c.strokeStyle = f.k[0]; c.lineWidth = w * 0.03; c.beginPath(); c.arc(0, 0, f.r * 0.92, 0.12, Math.PI - 0.12); c.stroke(); c.strokeStyle = INK; c.lineWidth = w * 0.016; c.beginPath(); c.arc(0, 0, f.r, 0, Math.PI); c.closePath(); c.stroke(); c.restore(); }
+    trail = trail.filter((t) => (t.age += dt) < 0.2);
+    for (let i = 1; i < trail.length; i++) { c.strokeStyle = `rgba(255,255,255,${1 - trail[i].age / 0.2})`; c.lineWidth = w * 0.035 * (1 - trail[i].age / 0.2); c.lineCap = "round"; c.beginPath(); c.moveTo(trail[i - 1].x, trail[i - 1].y); c.lineTo(trail[i].x, trail[i].y); c.stroke(); }
+    c.font = `400 ${w * 0.17}px "Bowlby One", sans-serif`; c.textBaseline = "top"; c.lineJoin = "round"; c.lineWidth = w * 0.04; c.strokeStyle = INK; c.strokeText(score, w * 0.08, w * 0.06); c.fillStyle = "#fff"; c.fillText(score, w * 0.08, w * 0.06);
+  });
+  host.addEventListener("pointermove", (e) => {
+    const k = cv.clientWidth / (cv.getBoundingClientRect().width || 1), x = e.offsetX, y = e.offsetY; // offsetX/Y are already in the canvas's own space
+    if (trail.length && Math.hypot(x - trail[trail.length - 1].x, y - trail[trail.length - 1].y) > cv.clientWidth * 0.6) trail = [];
+    trail.push({ x, y, age: 0 });
+    fruit = fruit.filter((f) => {
+      if (Math.hypot(x - f.x, y - f.y) > f.r * 1.15) return true;
+      const a = Math.random() * Math.PI;
+      for (const sgn of [1, -1]) halves.push({ x: f.x, y: f.y, vx: f.vx + sgn * cv.clientWidth * 0.5, vy: f.vy * 0.4 - cv.clientWidth * 0.5, r: f.r, k: f.k, rot: a + (sgn > 0 ? 0 : Math.PI), vr: sgn * 5 });
+      score++; return false;
+    });
+  });
+  host.addEventListener("pointerleave", () => { trail = []; });
+})();
 document.addEventListener("click", (e) => {
   const t = e.target.closest("[data-copy]"); if (!t) return;
   const done = () => { const l = t.querySelector(".a"); l.textContent = `Copied: ${t.dataset.copy}`; setTimeout(() => { l.textContent = "Copy name"; }, 2200); };
@@ -340,7 +481,8 @@ for (let k = 0; k < NS; k++) {
 // A gate is a slab in its project's colours with a hazard strip along the bottom edge. Its face is the
 // page section laid over it (see the loop), so the texture only needs the slab itself.
 const DARKG = { bg: [18, 19, 20], a: "#e8792b", b: "#121314", glow: [1.0, 0.56, 0.22] };
-const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [10, 10, 10], a: "#ff5a2b", b: "#0a0a0a", glow: [1.0, 0.36, 0.16] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] } };
+const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [10, 10, 10], a: "#ff5a2b", b: "#0a0a0a", glow: [1.0, 0.36, 0.16] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] },
+  knife: { bg: [255, 233, 214], a: "#ff6b6b", b: "#3d2c4f", glow: [1.0, 0.76, 0.6] }, slice: { bg: [62, 198, 192], a: "#ffcf3a", b: "#1d2a44", glow: [0.3, 0.9, 0.86] } };
 faces.forEach((fc, k) => {
   const th = THEME[themeOf(k)];
   fc.style.setProperty("--gate", `rgb(${th.bg})`); fc.style.setProperty("--sa", th.a); fc.style.setProperty("--sb", th.b);
