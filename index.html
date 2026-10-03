@@ -58,18 +58,22 @@
 
   /* gate 0: the name, and what is behind it */
   .t-hero .top { font-size: calc(clamp(10px, 3.1cqw, 18px) * var(--lk, 1)); color: var(--ink); }
-  .t-hero h1 { font: 700 29cqw/.8 var(--cond); text-transform: uppercase; margin: 5cqw 0 0 -.03em; }
+  .t-hero h1 { font: 700 26cqw/.8 var(--cond); text-transform: uppercase; margin: 4cqw 0 0 -.03em; }
   .t-hero h1 span { display: block; }
   .t-hero h1 span + span { color: var(--dev); }
   .t-hero .tag { font: 500 5.4cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 4cqw; }
   .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2cqw; margin-top: auto; }
   .chip { position: relative; text-decoration: none; }
-  .chip img { width: 100%; aspect-ratio: 1.25; object-fit: cover; object-position: 50% 6%; box-shadow: 0 0 0 1px var(--line); }
+  .chip img { width: 100%; aspect-ratio: 1.4; object-fit: cover; object-position: 50% 6%; box-shadow: 0 0 0 1px var(--line); }
   .chip.tracker img { object-position: 50% 0; }
   .chip.killer img { object-position: 50% 20%; }
   .chip span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .chip:hover img { box-shadow: 0 0 0 2px var(--dev); }
-  .next { color: var(--dim); margin-top: 3.5cqw; }
+  /* the scroll cue: impossible to miss, and it works as a button too */
+  .next { display: flex; align-items: center; justify-content: space-between; margin-top: 3cqw; padding: 2cqw 4cqw 2.4cqw; background: var(--dev); color: #0c0c0d; font: 700 8.4cqw/1 var(--cond); letter-spacing: .04em; text-transform: uppercase; text-decoration: none; }
+  .next:hover { background: var(--ink); }
+  .next i { font-style: normal; animation: nudge 1s ease-in-out infinite; }
+  @keyframes nudge { 0%, 100% { transform: translateY(-.7cqw); } 50% { transform: translateY(.7cqw); } }
 
   /* Match Tracker: its own look (near black, Geist, orange only for what is live) */
   .t-tracker { --live: #ff5a2b; font-family: "Geist", var(--body); }
@@ -373,7 +377,7 @@ $("#stops").innerHTML = `
     <p class="tag">${esc(RF.tagline)}</p>
     <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}" title="${esc(p.title)}">
       <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>
-    <div class="next mono sm">Scroll: the gate lifts &darr;</div>
+    <a class="next" href="#${esc((RF.projects[0] || { id: "contact" }).id)}">Scroll down <i aria-hidden="true">&darr;</i></a>
   </div></div></section>` +
   RF.projects.map((p, i) => `<section class="stop" id="${esc(p.id)}"><article class="face">${faceOf[themeOf(i + 1)](p, i)}</article></section>`).join("") + `
   <section class="stop" id="contact"><div class="face"><div class="in t-contact">
