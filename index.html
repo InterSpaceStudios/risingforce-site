@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Geist:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Saira+Condensed:wght@700;800&family=Saira+Semi+Condensed:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
     --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -75,27 +75,29 @@
   .next i { font-style: normal; animation: nudge 1s ease-in-out infinite; }
   @keyframes nudge { 0%, 100% { transform: translateY(-.7cqw); } 50% { transform: translateY(.7cqw); } }
 
-  /* Match Tracker: its own look (near black, Geist, orange only for what is live) */
-  .t-tracker { --live: #ff5a2b; font-family: "Geist", var(--body); }
-  .t-tracker .top b { color: var(--live); }
-  .shots { position: relative; display: block; margin-top: 3cqw; }
-  .shots .desk { width: 100%; aspect-ratio: 1.85; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16); }
-  .shots .phone { position: absolute; right: 3.5cqw; top: 8cqw; width: 19cqw; aspect-ratio: .5; object-fit: cover; object-position: 50% 0; border: .7cqw solid #0a0a0a; box-shadow: 0 0 0 1px rgba(255, 255, 255, .3); border-radius: 2.2cqw; }
-  .shots:hover .desk { box-shadow: 0 0 0 2px var(--live); }
+  /* Match Tracker: its own look (the arena: blue-black, Saira, gold, red only for what is live) */
+  .t-tracker { --live: #ff4d3d; --gold: #e8b54a; font-family: "Saira Semi Condensed", var(--body); }
+  .t-tracker .top b { color: var(--gold); }
+  .shots { display: grid; grid-template-columns: 1fr 21%; gap: 2cqw; margin-top: 3cqw; }
+  .shots .desk { width: 100%; height: 0; min-height: 100%; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16); }
+  .shots .phone { width: 100%; aspect-ratio: .5; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, .3); border-radius: 2.2cqw; }
+  .shots:hover .desk { box-shadow: 0 0 0 2px var(--gold); }
   .livebox { margin-top: 3.2cqw; min-height: 15cqw; width: 72%; }
   .livebox .st { display: flex; align-items: center; gap: 1.4cqw; color: var(--dim); white-space: nowrap; }
-  .livebox .st b { color: var(--live); font-weight: 500; }
+  .livebox .st b { color: var(--gold); font-weight: 500; }
+  .livebox .st .dot + b { color: var(--live); }
   .livebox .dot { width: 1.5cqw; height: 1.5cqw; border-radius: 50%; background: var(--live); flex: none; }
-  .match { display: flex; align-items: center; gap: 2cqw; margin-top: 1.4cqw; font: 600 5.6cqw/1.05 "Geist", var(--body); letter-spacing: -.02em; white-space: nowrap; }
+  .match { display: flex; align-items: center; gap: 2cqw; margin-top: 1.4cqw; font: 800 6.4cqw/1.05 "Saira Condensed", var(--cond); letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; }
   .match img { width: 5.4cqw; height: 5.4cqw; object-fit: contain; flex: none; }
-  .match .f { color: var(--live); }
-  .match .o { color: #a1a1a1; overflow: hidden; text-overflow: ellipsis; }
+  .match img.dark { filter: brightness(0) invert(.9); }
+  .match .f { color: var(--gold); }
+  .match .o { color: #9aa3af; overflow: hidden; text-overflow: ellipsis; }
   .match .sc { font-variant-numeric: tabular-nums; }
-  .t-tracker h2 { font: 600 9cqw/1 "Geist", var(--body); letter-spacing: -.04em; margin-top: auto; }
-  .t-tracker .blurb { color: #a1a1a1; font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.4; margin: 1.6cqw 0 3.4cqw; }
+  .t-tracker h2 { font: 800 11cqw/.95 "Saira Condensed", var(--cond); letter-spacing: .01em; text-transform: uppercase; margin-top: auto; }
+  .t-tracker .blurb { color: #9aa3af; font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.4; margin: 1.6cqw 0 3.4cqw; }
   .t-tracker .btns { margin-top: 0; }
-  .t-tracker .go { background: #ededed; color: #0a0a0a; font: 600 3.4cqw/1 "Geist", var(--body); letter-spacing: 0; text-transform: none; border-radius: 99cqw; padding: 2.6cqw 4.6cqw; }
-  .t-tracker .go:hover { background: var(--live); }
+  .t-tracker .go { background: #5fa136; color: #fff; font: 800 4.2cqw/1 "Saira Condensed", var(--cond); letter-spacing: .02em; text-transform: none; border-radius: .5cqw; padding: 2.4cqw 4.6cqw; }
+  .t-tracker .go:hover { background: #6fb842; }
 
   /* The Killer Game: its own look (purple, yellow, chunky) */
   .t-killer { --p: #6c2bd9; --y: #ffd23f; --edge: #3b138f; font-family: "Nunito", var(--body); font-weight: 800;
@@ -306,7 +308,7 @@ const faceOf = {
   tracker: (p, i) => `<div class="in t-tracker">
     ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
     <a class="shots" href="${esc(p.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(p.title)}">
-      <img class="desk" src="${esc(p.shots.desk)}" alt="${esc(p.title)} on a desktop: a live scoreboard and the day's schedule">
+      <img class="desk" src="${esc(p.shots.desk)}" alt="${esc(p.title)} on a desktop: an arena with the next match on its big screen">
       <img class="phone" src="${esc(p.shots.phone)}" alt="${esc(p.title)} on a phone">
     </a>
     <div class="livebox" id="livebox" data-api="${esc(p.api)}"></div>
@@ -399,8 +401,22 @@ if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
 (function live() {
   const box = $("#livebox"); if (!box) return;
   let m = null, kind = "";
-  const name = (o) => (o.acronym || o.name || "?").slice(0, 16);
-  const crest = (o) => o.image ? `<img src="${esc(o.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+  const name = (o) => (o.name && o.name.length <= 9 ? o.name : o.acronym || o.name || "?").slice(0, 16);
+  const crest = (o) => o.image ? `<img src="${esc(o.image)}" alt="" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+  // a near-black crest vanishes on this gate: show it as a light silhouette, like the tracker does
+  const dark = new Map();
+  function lighten(img) {
+    if (!dark.has(img.src)) {
+      try {
+        const c = document.createElement("canvas"); c.width = c.height = 16;
+        const g = c.getContext("2d"); g.drawImage(img, 0, 0, 16, 16);
+        const d = g.getImageData(0, 0, 16, 16).data; let sum = 0, n = 0;
+        for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 128) { sum += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; n++; }
+        dark.set(img.src, n > 0 && sum / n < 48);
+      } catch (e) { dark.set(img.src, false); }
+    }
+    img.classList.toggle("dark", dark.get(img.src));
+  }
   const until = (ms) => { const s = Math.round(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), mi = Math.floor(s % 3600 / 60); return s <= 0 ? "a moment" : d ? `${d}d ${h}h` : h ? `${h}h ${pad(mi)}m` : `${mi}m ${pad(s % 60)}s`; };
   function paint() {
     if (!m) return;
@@ -409,6 +425,7 @@ if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
     const mid = kind === "next" ? "v" : `${sc(a)} : ${sc(b)}`;
     box.innerHTML = `<div class="st mono sm">${head}<span>/ ${esc(m.event || "")}</span></div>
       <div class="match">${crest(a)}<span class="${a.followed ? "f" : "o"}">${esc(name(a))}</span><span class="sc">${mid}</span><span class="${b.followed ? "f" : "o"}">${esc(name(b))}</span>${crest(b)}</div>`;
+    for (const img of box.querySelectorAll("img")) img.complete && img.naturalWidth ? lighten(img) : img.addEventListener("load", () => lighten(img));
   }
   async function load() {
     try {
@@ -679,7 +696,7 @@ for (let k = 0; k < NS; k++) {
 // A gate is a slab in its project's colours with a hazard strip along the bottom edge. Its face is the
 // page section laid over it (see the loop), so the texture only needs the slab itself.
 const DARKG = { bg: [18, 19, 20], a: "#e8792b", b: "#121314", glow: [1.0, 0.56, 0.22] };
-const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [10, 10, 10], a: "#ff5a2b", b: "#0a0a0a", glow: [1.0, 0.36, 0.16] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] },
+const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [5, 6, 10], a: "#e8b54a", b: "#05060a", glow: [0.91, 0.71, 0.29] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] },
   knife: { bg: [255, 233, 214], a: "#ff6b6b", b: "#3d2c4f", glow: [1.0, 0.76, 0.6] }, slice: { bg: [62, 198, 192], a: "#ffcf3a", b: "#1d2a44", glow: [0.3, 0.9, 0.86] },
   merge: { bg: [255, 212, 59], a: "#ff4d6d", b: "#1d1d1d", glow: [1.0, 0.84, 0.3] }, golf: { bg: [94, 200, 242], a: "#ffd23a", b: "#22303f", glow: [0.42, 0.78, 1.0] },
   brick: { bg: [31, 58, 46], a: "#e3b04b", b: "#1f3a2e", glow: [0.5, 0.78, 0.5] }, block: { bg: [29, 39, 89], a: "#ffcf3a", b: "#141c45", glow: [0.42, 0.52, 1.0] } };

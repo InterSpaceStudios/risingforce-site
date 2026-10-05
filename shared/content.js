@@ -8,7 +8,7 @@ window.RF = {
     {
       id: "tracker", title: "Match Tracker", theme: "tracker", kind: "Web", year: 2026, status: "LIVE",
       stack: "Cloudflare Workers / PandaScore",
-      blurb: "When do my teams play. A live CS2 schedule with scores, brackets, a calendar feed and an OBS overlay.",
+      blurb: "When do my teams play. A CS2 arena with the next match on the big screen: live scores, win odds, brackets and an OBS overlay.",
       url: "https://cs2-matches.cs2-matches.workers.dev",
       api: "https://cs2-matches.cs2-matches.workers.dev/api", // CORS-open; the gate shows what is on right now
       shots: { desk: "media/tracker-desk.jpg", phone: "media/tracker-phone.jpg" },
