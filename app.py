@@ -25,8 +25,9 @@ def asset(folder, name):
     if folder not in PUBLIC_DIRS:
         abort(404)
     response = send_from_directory(os.path.join(BASE_DIR, folder), name)
-    # the words change with the page; the screenshots can sit in the browser for an hour
-    response.headers['Cache-Control'] = 'no-cache' if folder == 'shared' else 'public, max-age=3600'
+    # always revalidate: a retaken screenshot keeps its file name, and an hour of browser cache
+    # made the live site show the old one after a deploy (an unchanged file still answers 304)
+    response.headers['Cache-Control'] = 'no-cache'
     return response
 
 if __name__ == '__main__':
