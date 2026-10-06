@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Saira+Condensed:wght@700;800&family=Saira+Semi+Condensed:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Russo+One&family=Bai+Jamjuree:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
     --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -75,8 +75,8 @@
   .next i { font-style: normal; animation: nudge 1s ease-in-out infinite; }
   @keyframes nudge { 0%, 100% { transform: translateY(-.7cqw); } 50% { transform: translateY(.7cqw); } }
 
-  /* Match Tracker: its own look (the arena: blue-black, Saira, gold, red only for what is live) */
-  .t-tracker { --live: #ff4d3d; --gold: #e8b54a; font-family: "Saira Semi Condensed", var(--body); }
+  /* Match Tracker: its own look (the arena: blue-black, Russo One + Bai Jamjuree, gold, red only for what is live) */
+  .t-tracker { --live: #ff4d3d; --gold: #e8b54a; font-family: "Bai Jamjuree", var(--body); }
   .t-tracker .top b { color: var(--gold); }
   .shots { display: grid; grid-template-columns: 1fr 21%; gap: 2cqw; margin-top: 3cqw; }
   .shots .desk { width: 100%; height: 0; min-height: 100%; object-fit: cover; object-position: 50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16); }
@@ -87,16 +87,16 @@
   .livebox .st b { color: var(--gold); font-weight: 500; }
   .livebox .st .dot + b { color: var(--live); }
   .livebox .dot { width: 1.5cqw; height: 1.5cqw; border-radius: 50%; background: var(--live); flex: none; }
-  .match { display: flex; align-items: center; gap: 2cqw; margin-top: 1.4cqw; font: 800 6.4cqw/1.05 "Saira Condensed", var(--cond); letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; }
+  .match { display: flex; align-items: center; gap: 2cqw; margin-top: 1.4cqw; font: 400 4.7cqw/1.1 "Russo One", var(--cond); text-transform: uppercase; white-space: nowrap; }
   .match img { width: 5.4cqw; height: 5.4cqw; object-fit: contain; flex: none; }
   .match img.dark { filter: brightness(0) invert(.9); }
   .match .f { color: var(--gold); }
   .match .o { color: #9aa3af; overflow: hidden; text-overflow: ellipsis; }
   .match .sc { font-variant-numeric: tabular-nums; }
-  .t-tracker h2 { font: 800 11cqw/.95 "Saira Condensed", var(--cond); letter-spacing: .01em; text-transform: uppercase; margin-top: auto; }
+  .t-tracker h2 { font: 400 8.6cqw/1 "Russo One", var(--cond); text-transform: uppercase; margin-top: auto; }
   .t-tracker .blurb { color: #9aa3af; font-size: clamp(12px, 3.5cqw, 21px); line-height: 1.4; margin: 1.6cqw 0 3.4cqw; }
   .t-tracker .btns { margin-top: 0; }
-  .t-tracker .go { background: #5fa136; color: #fff; font: 800 4.2cqw/1 "Saira Condensed", var(--cond); letter-spacing: .02em; text-transform: none; border-radius: .5cqw; padding: 2.4cqw 4.6cqw; }
+  .t-tracker .go { background: #5fa136; color: #fff; font: 400 3.3cqw/1 "Russo One", var(--cond); text-transform: none; border-radius: .5cqw; padding: 2.4cqw 4.6cqw; }
   .t-tracker .go:hover { background: #6fb842; }
 
   /* The Killer Game: its own look (purple, yellow, chunky) */
