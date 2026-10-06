@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RisingForce</title>
-<meta name="description" content="RisingForce: sites and games, built from scratch. Match Tracker and seven phone games.">
+<meta name="description" content="RisingForce: sites, games and music, built from scratch. Match Tracker, seven phone games and five tracks.">
 <meta property="og:title" content="RisingForce">
-<meta property="og:description" content="Sites and games, built from scratch.">
+<meta property="og:description" content="Sites, games and music, built from scratch.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://risingforce.se/">
 <meta property="og:image" content="https://risingforce.se/media/og.jpg">
@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e8792b'/%3E%3Cpath d='M6 22 16 8l10 14h-6l-4-6-4 6z' fill='%230c0c0d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Russo+One&family=Bai+Jamjuree:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=Russo+One&family=Bai+Jamjuree:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Lilita+One&family=Nunito:wght@800&family=Fredoka:wght@500;600;700&family=Bowlby+One&family=DM+Serif+Display:ital@0;1&family=Krona+One&family=Chakra+Petch:wght@600&family=Rajdhani:wght@700&family=Unbounded:wght@500&family=Silkscreen&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #0c0c0d; --ink: #ece8df; --dim: #8b8880; --line: rgba(236, 232, 223, .2); --dev: #e8792b;
     --cond: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -33,11 +33,26 @@
   #gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
   :focus-visible { outline: 2px solid var(--dev); outline-offset: 2px; }
 
-  .bar { position: fixed; z-index: 5; top: 0; left: 0; right: 0; height: var(--bar); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 var(--gut); background: var(--bg); border-bottom: 1px solid var(--line); }
+  .bar { position: fixed; z-index: 5; top: 0; left: 0; right: 0; height: var(--bar); display: flex; align-items: center; gap: 16px; padding: 0 var(--gut); background: var(--bg); border-bottom: 1px solid var(--line); }
   .bar a { text-decoration: none; }
-  .bar .name { font: 700 20px/1 var(--cond); letter-spacing: .06em; text-transform: uppercase; }
+  .bar .name { font: 700 20px/1 var(--cond); letter-spacing: .06em; text-transform: uppercase; margin-right: auto; }
   .bar nav { display: flex; gap: 18px; color: var(--dim); }
   .bar nav a:hover { color: var(--dev); }
+  /* the music follows you down the hall: play, what is on, next */
+  .mini { display: flex; align-items: center; gap: 2px; }
+  .mini[hidden] { display: none; }
+  .mini button { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 7px; text-transform: inherit; letter-spacing: inherit; white-space: nowrap; }
+  .mini svg { width: 14px; height: 14px; flex: none; }
+  .mini .pp { color: var(--dev); }
+  .mini .nx { color: var(--dim); display: none; }
+  .mini button:hover { color: var(--dev); }
+  body.playing .mini .nx { display: flex; }
+  /* one play/pause drawing, used by every play button */
+  .pp .pa, body.playing .pp .pl { display: none; }
+  body.playing .pp .pa { display: inline; }
+  .eq rect { transform-box: fill-box; transform-origin: 50% 100%; animation: eq .9s steps(4) infinite; }
+  .eq rect:nth-child(2) { animation-delay: -.3s; } .eq rect:nth-child(3) { animation-delay: -.6s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.35); } 25% { transform: scaleY(1); } 50% { transform: scaleY(.55); } 75% { transform: scaleY(.8); } }
 
   /* One screen per stop. The page scrolls, but each stop's content is the face of a gate: it sits at the
      gate's parked outline (--l/--t/--w/--h) and the script scales and lifts it with the gate, so a gate
@@ -56,21 +71,46 @@
   .go { display: inline-block; padding: 2.4cqw 4.6cqw 2.7cqw; background: var(--dev); color: #0c0c0d; font: 700 4.4cqw/1 var(--cond); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
   .go:hover { background: var(--ink); }
 
-  /* gate 0: the name, and what is behind it */
-  .t-hero .top { font-size: calc(clamp(10px, 3.1cqw, 18px) * var(--lk, 1)); color: var(--ink); }
-  .t-hero h1 { font: 700 26cqw/.8 var(--cond); text-transform: uppercase; margin: 4cqw 0 0 -.03em; }
-  .t-hero h1 span { display: block; }
+  /* gate 0: the main menu. The name, where you can go, and how to get around */
+  .t-hero { padding-top: 4.6cqw; }
+  .t-hero h1 { font: 700 17.6cqw/.8 var(--cond); text-transform: uppercase; margin-left: -.03em; white-space: nowrap; }
   .t-hero h1 span + span { color: var(--dev); }
-  .t-hero .tag { font: 500 5.4cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 4cqw; }
-  .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2cqw; margin-top: auto; }
+  .t-hero .tag { font: 500 4.5cqw/1.12 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 2.6cqw; }
+  .menu { display: grid; gap: 1.1cqw; margin-top: 3.8cqw; }
+  .mi { display: flex; align-items: center; gap: 2.6cqw; text-decoration: none; }
+  .mi .mt { font: 700 8.4cqw/1 var(--cond); letter-spacing: .02em; text-transform: uppercase; text-decoration: none; }
+  .mi .mt::before { content: ""; display: inline-block; border: solid transparent; border-width: 2.3cqw 0 2.3cqw 3.2cqw; border-left-color: var(--dev); margin-right: 1.8cqw; }
+  .mi .md { margin-left: auto; color: var(--dim); font-size: calc(clamp(9px, 2.7cqw, 15px) * var(--lk, 1)); }
+  a.mi:hover .mt, .mi a.mt:hover { color: var(--dev); }
+  a.mi:hover .md { color: var(--ink); }
+  .mi .pp { width: 6.6cqw; height: 6.6cqw; border-radius: 50%; background: var(--dev); color: #0c0c0d; display: grid; place-items: center; flex: none; }
+  .mi .pp svg { width: 52%; height: 52%; }
+  .mi .pp:hover { background: var(--ink); }
+  .chips { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1.2cqw; margin: .3cqw 0 .9cqw; }
   .chip { position: relative; text-decoration: none; }
   .chip img { width: 100%; aspect-ratio: 1.4; object-fit: cover; object-position: 50% 6%; box-shadow: 0 0 0 1px var(--line); }
+  .how { list-style: none; padding: 0; display: grid; gap: .9cqw; margin-top: auto; }
+  .how .hh { color: var(--dev); font-size: calc(clamp(9px, 2.7cqw, 15px) * var(--lk, 1)); }
+  .how li:not(.hh) { display: flex; align-items: center; gap: 2.8cqw; color: #bdb9b0; font-size: clamp(10px, 3.5cqw, 20px); line-height: 1.2; }
+  .how li b { color: var(--ink); font-weight: 500; }
+  .how svg { width: 6.2cqw; height: 6.2cqw; flex: none; color: var(--ink); overflow: visible; }
+  .how .t { display: none !important; }
+  @media (hover: none) and (pointer: coarse) { .how .m { display: none !important; } .how .t { display: flex !important; } }
+  @media (max-width: 860px) { .how .map { display: none !important; } }
+  .a-wheel { animation: wheel 1.3s ease-in infinite; }
+  .a-swipe { animation: swipe 1.3s ease-in infinite; }
+  .a-poke { animation: poke .9s steps(1) infinite; }
+  .a-map { animation: mapgo 2.8s steps(1) infinite; }
+  @keyframes wheel { 0% { transform: none; opacity: 1; } 70%, 100% { transform: translateY(5px); opacity: 0; } }
+  @keyframes swipe { 0% { transform: none; opacity: 1; } 70%, 100% { transform: translateY(-9px); opacity: 0; } }
+  @keyframes poke { 0%, 100% { transform: translate(2.5px, 2.5px); } 50% { transform: none; } }
+  @keyframes mapgo { 0% { transform: none; } 25% { transform: translateX(5px); } 50% { transform: translateX(10px); } 75% { transform: translateX(15px); } }
   .chip.tracker img { object-position: 50% 0; }
   .chip.killer img { object-position: 50% 20%; }
   .chip span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .chip:hover img { box-shadow: 0 0 0 2px var(--dev); }
   /* the scroll cue: impossible to miss, and it works as a button too */
-  .next { display: flex; align-items: center; justify-content: space-between; margin-top: 3cqw; padding: 2cqw 4cqw 2.4cqw; background: var(--dev); color: #0c0c0d; font: 700 8.4cqw/1 var(--cond); letter-spacing: .04em; text-transform: uppercase; text-decoration: none; }
+  .next { display: flex; align-items: center; justify-content: space-between; margin-top: 3.2cqw; padding: 2.2cqw 4cqw 2.6cqw; background: var(--dev); color: #0c0c0d; font: 700 6.1cqw/1 var(--cond); letter-spacing: .04em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
   .next:hover { background: var(--ink); }
   .next i { font-style: normal; animation: nudge 1s ease-in-out infinite; }
   @keyframes nudge { 0%, 100% { transform: translateY(-.7cqw); } 50% { transform: translateY(.7cqw); } }
@@ -207,6 +247,38 @@
   .t-block .gbtn.w { background: #2c3a78; color: #dfe6ff; box-shadow: 0 1cqw 0 #0e1433; }
   .t-block .gbtn:hover { transform: translateY(.4cqw); }
 
+  /* Music: its own look (black, live-wire lime, wide type). The scope draws the track while it plays. */
+  .t-music { --lime: #c6ff3d; --mdim: #8d9580; color: #eef3e2; font-family: "Bai Jamjuree", var(--body); }
+  .t-music .top { color: var(--mdim); }
+  .t-music .top b { color: var(--lime); }
+  .scope { position: relative; display: block; height: 45cqw; margin-top: 3cqw; background: #050604; border-radius: 2.4cqw; overflow: hidden; }
+  .scope canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .scope .now { position: absolute; left: 4cqw; bottom: 3.6cqw; }
+  .scope .kind { color: var(--lime); }
+  .scope h2 { font: 400 7cqw/1 "Krona One", var(--cond); text-transform: uppercase; white-space: nowrap; margin-top: 1.2cqw; }
+  .scope .ctl { position: absolute; right: 3.2cqw; bottom: 2.8cqw; display: flex; align-items: center; gap: 1.2cqw; }
+  .scope .pp { width: 12.5cqw; height: 12.5cqw; border-radius: 50%; background: var(--lime); color: #0a0b07; display: grid; place-items: center; }
+  .scope .pp svg { width: 46%; height: 46%; }
+  .scope .pp:hover { background: #fff; }
+  .scope .sk { width: 6.6cqw; height: 6.6cqw; color: #eef3e2; display: grid; place-items: center; }
+  .scope .sk svg { width: 78%; height: 78%; }
+  .scope .sk:hover { color: var(--lime); }
+  /* where you are in the track: a wire, lit up to the spark. Click or drag to seek. */
+  .wire { position: relative; height: 5.4cqw; margin-top: 2.2cqw; cursor: pointer; touch-action: none; }
+  .wire::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: .5cqw; margin-top: -.25cqw; border-radius: 1cqw; background: #2a3020; }
+  .wire i { position: absolute; left: 0; top: 50%; width: calc(var(--p, 0) * 100%); height: .8cqw; margin-top: -.4cqw; border-radius: 1cqw; background: var(--lime); box-shadow: 0 0 1.8cqw var(--lime); }
+  .wire b { position: absolute; left: calc(var(--p, 0) * 100%); top: 50%; width: 2.6cqw; height: 2.6cqw; margin: -1.3cqw 0 0 -1.3cqw; border-radius: 50%; background: #fff; box-shadow: 0 0 1.4cqw .5cqw var(--lime); }
+  .times { display: flex; justify-content: space-between; color: var(--mdim); font-variant-numeric: tabular-nums; }
+  .tracks { list-style: none; padding: 0; display: grid; gap: .5cqw; margin-top: auto; }
+  .tracks button { display: grid; grid-template-columns: 7.4cqw 1fr auto 10cqw; align-items: center; width: 100%; padding: 2cqw 2.4cqw; border-radius: 1.4cqw; text-align: left; }
+  .tracks .n, .tracks .k { color: var(--mdim); }
+  .tracks .t { font: 400 4.4cqw/1 "Krona One", var(--cond); text-transform: uppercase; white-space: nowrap; }
+  .tracks .k { font-size: clamp(9px, 2.9cqw, 16px); font-weight: 600; white-space: nowrap; }
+  .tracks .d { text-align: right; font-variant-numeric: tabular-nums; }
+  .tracks button:hover { background: #171c0f; }
+  .tracks .on button { background: var(--lime); color: #0a0b07; }
+  .tracks .on .n, .tracks .on .k { color: inherit; }
+
   /* any other project: plain */
   .t-plain h2, .t-contact h2 { font: 700 16.5cqw/.86 var(--cond); text-transform: uppercase; margin-top: auto; overflow-wrap: anywhere; }
   .t-plain .blurb { font-size: clamp(14px, 4.4cqw, 26px); line-height: 1.4; margin: 3.5cqw 0 5cqw; }
@@ -247,16 +319,19 @@
 
 <header class="bar mono">
   <a class="name" href="#top">RisingForce</a>
-  <nav><a href="#projects" id="n-proj">Projects</a><a href="#contact">Contact</a></nav>
+  <div class="mini" id="mini" hidden>
+    <button class="pp" type="button" data-m="toggle" aria-label="Play or pause the music"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" fill="currentColor" d="M7 4.5v15l12.5-7.5z"/><path class="pa" fill="currentColor" d="M6 4.5h4.4v15H6zM13.6 4.5H18v15h-4.4z"/></svg><span id="mini-t">Play music</span></button>
+    <button class="nx" type="button" data-m="next" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 5v14l9.5-7zM16 5h3v14h-3z"/></svg></button>
+  </div>
+  <nav><a href="#projects" id="n-proj">Projects</a><a href="#music" id="n-music">Music</a><a href="#contact">Contact</a></nav>
 </header>
 
 <main id="stops"></main>
 
 <div id="radar">
-  <div class="where mono"><b id="r-where">Entrance</b><span id="r-n"></span></div>
+  <div class="where mono"><b id="r-where">Main menu</b><span id="r-n"></span></div>
   <svg id="r-svg" role="img" aria-label="Map of the page: click a gate to jump there"></svg>
 </div>
-
 <div id="fontpick"></div>
 
 <script src="shared/content.js"></script>
@@ -290,9 +365,36 @@ if (LOCAL) addEventListener("keydown", (e) => { if (e.key.toLowerCase() === "f" 
 else $("#fontpick").remove();
 setLabel();
 
-/* ---------- the page: one stop per gate. Gate 0 is the front door, the last one is contact. ---------- */
-const N = RF.projects.length, NS = N + 2;
+/* ---------- the page: one stop per gate. Gate 0 is the main menu, then the projects, the music, and contact. ---------- */
+const TRACKS = (RF.music && RF.music.tracks) || [];
+const N = RF.projects.length, M = TRACKS.length ? 1 : 0, NS = N + M + 2;
 const top = (a, b) => `<div class="top mono"><span>${a}</span><b>${b}</b></div>`;
+const clock = (s) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
+const PP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" fill="currentColor" d="M7 4.5v15l12.5-7.5z"/><path class="pa" fill="currentColor" d="M6 4.5h4.4v15H6zM13.6 4.5H18v15h-4.4z"/></svg>';
+// the how-to drawings on the main menu
+const HOW = {
+  mouse: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect class="a-wheel" x="11" y="5.5" width="2" height="4.5" rx="1" fill="#e8792b"/></svg>',
+  touch: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle class="a-swipe" cx="12" cy="16.5" r="2.3" fill="#e8792b"/></svg>',
+  poke: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="13" height="15" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="a-poke" d="M10.5 10l10.5 4.2-4.6 1.6-1.6 4.7z" fill="#e8792b"/></svg>',
+  music: '<svg class="eq" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="4.4" height="16" fill="#e8792b"/><rect x="9.8" y="4" width="4.4" height="16" fill="#e8792b"/><rect x="16.6" y="4" width="4.4" height="16" fill="#e8792b"/></svg>',
+  map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 7.5h21M1.5 16.5h21" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 7.5v9M13 7.5v9M18 7.5v9" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".55"/><circle class="a-map" cx="4.5" cy="12" r="2.1" fill="#e8792b"/></svg>',
+};
+const musicFace = () => `<div class="in t-music">
+    ${top("Music", `${TRACKS.length} tracks / ${clock(TRACKS.reduce((s, t) => s + t.dur, 0))}`)}
+    <div class="scope" id="scope">
+      <canvas></canvas>
+      <div class="now"><span class="kind mono sm" id="m-kind"></span><h2 id="m-title"></h2></div>
+      <div class="ctl">
+        <button class="sk" type="button" data-m="prev" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14l-9.5-7zM5 5h3v14H5z"/></svg></button>
+        <button class="pp" type="button" data-m="toggle" aria-label="Play or pause">${PP}</button>
+        <button class="sk" type="button" data-m="next" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 5v14l9.5-7zM16 5h3v14h-3z"/></svg></button>
+      </div>
+    </div>
+    <div class="wire" id="m-wire" role="slider" tabindex="0" aria-label="Position in the track" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b></b></div>
+    <div class="times mono sm"><span id="m-el">0:00</span><span id="m-du"></span></div>
+    <ol class="tracks">${TRACKS.map((t, i) => `<li><button type="button" data-m-play="${i}">
+      <span class="n mono sm">${pad(i + 1)}</span><span class="t">${esc(t.title)}</span><span class="k">${esc(t.kind)}</span><span class="d mono sm">${clock(t.dur)}</span></button></li>`).join("")}</ol>
+  </div>`;
 const gameFace = (p, i, cls, logo, play, gh, toyHTML) => `<div class="in ${cls}">
     ${top(`${pad(i + 1)} / ${pad(N)}`, esc(p.status))}
     <div class="phones">
@@ -370,18 +472,31 @@ const ICON = {
   discord: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5865F2" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>',
   email: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ece8df" d="M2 4h20v16H2zm2.4 2 7.6 6.2L19.6 6zM4 7.6V18h16V7.6l-8 6.5z"/></svg>',
 };
-const themeOf = (k) => k === 0 ? "hero" : k > N ? "contact" : (faceOf[RF.projects[k - 1].theme] ? RF.projects[k - 1].theme : "plain");
-const half = Math.ceil(RF.name.length / 2);
+const themeOf = (k) => k === 0 ? "hero" : k > N + M ? "contact" : k > N ? "music" : (faceOf[RF.projects[k - 1].theme] ? RF.projects[k - 1].theme : "plain");
+const half = Math.ceil(RF.name.length / 2), firstId = esc((RF.projects[0] || { id: M ? "music" : "contact" }).id);
 $("#stops").innerHTML = `
   <section class="stop" id="top"><div class="face"><div class="in t-hero">
-    ${top(esc(RF.domain), esc(RF.place))}
     <h1 aria-label="${esc(RF.name)}"><span>${esc(RF.name.slice(0, half))}</span><span>${esc(RF.name.slice(half))}</span></h1>
     <p class="tag">${esc(RF.tagline)}</p>
-    <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}" title="${esc(p.title)}">
-      <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>
-    <a class="next" href="#${esc((RF.projects[0] || { id: "contact" }).id)}">Scroll down <i aria-hidden="true">&darr;</i></a>
+    <nav class="menu" aria-label="Main menu">
+      ${N ? `<a class="mi" href="#${firstId}"><span class="mt">Projects</span><span class="md mono">${N > 1 ? `Gates 01 to ${pad(N)}` : "Gate 01"}</span></a>
+      <div class="chips">${RF.projects.map((p, i) => `<a class="chip ${esc(p.theme || "")}" href="#${esc(p.id)}" title="${esc(p.title)}">
+        <img src="${esc(p.shots ? Object.values(p.shots)[0] : "")}" alt=""><span class="mono"><b>${pad(i + 1)}</b>${esc(p.title)}</span></a>`).join("")}</div>` : ""}
+      ${M ? `<div class="mi"><a class="mt" href="#music">Music</a><button class="pp" type="button" data-m="toggle" aria-label="Play or pause the music">${PP}</button><span class="md mono">Gate ${pad(N + 1)}</span></div>` : ""}
+      <a class="mi" href="#contact"><span class="mt">Contact</span><span class="md mono">Gate ${pad(N + M + 1)}</span></a>
+    </nav>
+    <ul class="how">
+      <li class="hh mono">How to get around</li>
+      <li class="m">${HOW.mouse}<span><b>Scroll down</b> and you roll to the next gate.</span></li>
+      <li class="t">${HOW.touch}<span><b>Swipe up</b> and you roll to the next gate.</span></li>
+      <li>${HOW.poke}<span><b>Poke the games.</b> The one on each gate is live.</span></li>
+      ${M ? `<li>${HOW.music}<span><b>Press play</b> up top and my music follows you.</span></li>` : ""}
+      <li class="map">${HOW.map}<span><b>Lost?</b> The map in the corner jumps to any gate.</span></li>
+    </ul>
+    <a class="next" href="#${firstId}">Scroll down for projects <i aria-hidden="true">&darr;</i></a>
   </div></div></section>` +
-  RF.projects.map((p, i) => `<section class="stop" id="${esc(p.id)}"><article class="face">${faceOf[themeOf(i + 1)](p, i)}</article></section>`).join("") + `
+  RF.projects.map((p, i) => `<section class="stop" id="${esc(p.id)}"><article class="face">${faceOf[themeOf(i + 1)](p, i)}</article></section>`).join("") +
+  (M ? `<section class="stop" id="music"><article class="face">${musicFace()}</article></section>` : "") + `
   <section class="stop" id="contact"><div class="face"><div class="in t-contact">
     ${top("Contact", `${pad(RF.contact.length)} ways`)}
     <h2>Contact</h2>
@@ -393,8 +508,9 @@ $("#stops").innerHTML = `
     <p class="fine mono">&copy; 2026 RisingForce / the hall behind this page is rendered live in your browser, no libraries</p>
   </div></div></section>`;
 const stops = [...document.querySelectorAll(".stop")], faces = stops.map((s) => s.querySelector(".face"));
-const gateName = (k) => k === 0 ? "Entrance" : k > N ? "Contact" : `Gate ${pad(k)} / ${RF.projects[k - 1].title}`;
+const gateName = (k) => k === 0 ? "Main menu" : k > N + M ? "Contact" : k > N ? `Gate ${pad(k)} / Music` : `Gate ${pad(k)} / ${RF.projects[k - 1].title}`;
 if (RF.projects[0]) $("#n-proj").href = "#" + RF.projects[0].id;
+if (!M) $("#n-music").remove();
 
 /* ---------- gate widgets ---------- */
 // Match Tracker: what the real tracker is showing right now, from its own API.
@@ -699,7 +815,8 @@ const DARKG = { bg: [18, 19, 20], a: "#e8792b", b: "#121314", glow: [1.0, 0.56, 
 const THEME = { hero: DARKG, contact: DARKG, plain: DARKG, tracker: { bg: [5, 6, 10], a: "#e8b54a", b: "#05060a", glow: [0.91, 0.71, 0.29] }, killer: { bg: [108, 43, 217], a: "#ffd23f", b: "#3b138f", glow: [0.66, 0.4, 1.0] },
   knife: { bg: [255, 233, 214], a: "#ff6b6b", b: "#3d2c4f", glow: [1.0, 0.76, 0.6] }, slice: { bg: [62, 198, 192], a: "#ffcf3a", b: "#1d2a44", glow: [0.3, 0.9, 0.86] },
   merge: { bg: [255, 212, 59], a: "#ff4d6d", b: "#1d1d1d", glow: [1.0, 0.84, 0.3] }, golf: { bg: [94, 200, 242], a: "#ffd23a", b: "#22303f", glow: [0.42, 0.78, 1.0] },
-  brick: { bg: [31, 58, 46], a: "#e3b04b", b: "#1f3a2e", glow: [0.5, 0.78, 0.5] }, block: { bg: [29, 39, 89], a: "#ffcf3a", b: "#141c45", glow: [0.42, 0.52, 1.0] } };
+  brick: { bg: [31, 58, 46], a: "#e3b04b", b: "#1f3a2e", glow: [0.5, 0.78, 0.5] }, block: { bg: [29, 39, 89], a: "#ffcf3a", b: "#141c45", glow: [0.42, 0.52, 1.0] },
+  music: { bg: [10, 11, 7], a: "#c6ff3d", b: "#0a0b07", glow: [0.7, 1.0, 0.28] } };
 faces.forEach((fc, k) => {
   const th = THEME[themeOf(k)];
   fc.style.setProperty("--gate", `rgb(${th.bg})`); fc.style.setProperty("--sa", th.a); fc.style.setProperty("--sb", th.b);
@@ -954,7 +1071,7 @@ function buildRadar() {
 /* ---------- sound: always on. Browsers only allow audio after the visitor's first click, tap or key press,
    so it starts then. ---------- */
 const Sound = (() => {
-  let ctx, master, air, nb;
+  let ctx, master, hum, air, nb;
   const api = {};
   const SCALE = [0, 1, 3, 5, 7, 8, 10, 12, 13, 15]; // E Phrygian, one note per gate
   function start() {
@@ -963,15 +1080,16 @@ const Sound = (() => {
     master = ctx.createGain(); master.gain.value = 0; master.connect(comp).connect(ctx.destination);
     nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const d = nb.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    const noise = (freq, type, qv) => { const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = nb; s.loop = true; f.type = type; f.frequency.value = freq; f.Q.value = qv; s.connect(f).connect(g).connect(master); s.start(); return g; };
-    noise(220, "lowpass", 0.7).gain.value = 0.09;          // room tone
-    air = noise(700, "bandpass", 0.5); air.gain.value = 0;   // rises with camera speed
+    hum = ctx.createGain(); hum.connect(master);   // room tone and the gates' notes: these step aside for the music
+    const noise = (freq, type, qv, to) => { const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = nb; s.loop = true; f.type = type; f.frequency.value = freq; f.Q.value = qv; s.connect(f).connect(g).connect(to); s.start(); return g; };
+    noise(220, "lowpass", 0.7, hum).gain.value = 0.09;          // room tone
+    air = noise(700, "bandpass", 0.5, master); air.gain.value = 0;   // rises with camera speed
     for (let k = 0; k < NS; k++) { // each gate hums its own note from where it stands (HRTF)
       const f = 82.41 * Math.pow(2, SCALE[k % SCALE.length] / 12);
       const pan = new PannerNode(ctx, { panningModel: "HRTF", distanceModel: "inverse", refDistance: 120, rolloffFactor: 2.4, positionX: gx(k), positionY: EYE, positionZ: 0 });
       const g = ctx.createGain(); g.gain.value = 0.22;
       for (const [mul, type, amp] of [[2, "triangle", 1], [4.01, "sine", 0.15], [1, "sine", 0.6]]) { const o = ctx.createOscillator(), og = ctx.createGain(); o.type = type; o.frequency.value = f * mul; og.gain.value = amp; o.connect(og).connect(g); o.start(); }
-      g.connect(pan).connect(master);
+      g.connect(pan).connect(hum);
     }
   }
   const wake = () => {
@@ -999,7 +1117,81 @@ const Sound = (() => {
     og.gain.setValueAtTime(0.0001, t); og.gain.setValueAtTime(0.4, t + 0.72); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
     o.connect(og).connect(master); o.start(t + 0.7); o.stop(t + 0.95);
   };
-  api.pause = (hidden) => { if (ctx) hidden ? ctx.suspend() : ctx.resume(); };
+  api.pause = (hidden) => { if (ctx) hidden && !Music.playing() ? ctx.suspend() : ctx.resume(); }; // a track keeps playing in a background tab
+  api.ctx = () => { wake(); return ctx; };
+  api.duck = (on) => { if (ctx) hum.gain.setTargetAtTime(on ? 0 : 1, ctx.currentTime, 0.4); };
+  return api;
+})();
+
+/* ---------- music: one player for the whole page. The gate, the main menu and the top bar all drive it. ---------- */
+const Music = (() => {
+  const api = { playing: () => false };
+  if (!M) return api;
+  const el = new Audio(); el.preload = "none";
+  let at = 0, an = null, wave = null;
+  const loaded = () => !!el.getAttribute("src");
+  function paint() {
+    const t = TRACKS[at], on = !el.paused;
+    document.body.classList.toggle("playing", on);
+    $("#m-title").textContent = t.title; $("#m-kind").textContent = `${t.kind} / ${t.bpm} BPM`; $("#m-du").textContent = clock(t.dur);
+    $("#mini-t").textContent = loaded() ? t.title : "Play music";
+    document.querySelectorAll(".tracks li").forEach((li, i) => li.classList.toggle("on", loaded() && i === at));
+    Sound.duck(on);
+  }
+  function load(i) {
+    at = (i + TRACKS.length) % TRACKS.length; el.src = TRACKS[at].src; paint();
+    if (navigator.mediaSession && window.MediaMetadata) navigator.mediaSession.metadata = new MediaMetadata({ title: TRACKS[at].title, artist: RF.music.artist });
+  }
+  function play(i) {
+    if (i !== undefined && i !== at || !loaded()) load(i === undefined ? at : i);
+    const ctx = Sound.ctx();
+    if (ctx && !an) { // through the page's audio graph, so the scope can read the signal
+      try { an = ctx.createAnalyser(); an.fftSize = 2048; wave = new Uint8Array(an.fftSize); ctx.createMediaElementSource(el).connect(an); an.connect(ctx.destination); } catch (e) { an = null; }
+    }
+    el.play().catch(() => {});
+  }
+  const toggle = () => el.paused ? play() : el.pause();
+  const seek = (f) => { if (!loaded()) load(at); el.currentTime = clamp(f, 0, 1) * (isFinite(el.duration) ? el.duration : TRACKS[at].dur); };
+  for (const ev of ["play", "pause", "emptied"]) el.addEventListener(ev, paint);
+  el.addEventListener("ended", () => { if (at < TRACKS.length - 1) play(at + 1); else load(0); }); // the album plays through, then stops
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-m], [data-m-play]"); if (!b) return;
+    if (b.dataset.mPlay !== undefined) { const i = +b.dataset.mPlay; i === at && loaded() ? toggle() : play(i); }
+    else if (b.dataset.m === "toggle") toggle();
+    else play(at + (b.dataset.m === "next" ? 1 : -1));
+  });
+  if (navigator.mediaSession) for (const [k, fn] of [["play", () => play()], ["pause", () => el.pause()], ["nexttrack", () => play(at + 1)], ["previoustrack", () => play(at - 1)]]) { try { navigator.mediaSession.setActionHandler(k, fn); } catch (e) { /* not on this browser */ } }
+
+  const wire = $("#m-wire"), at01 = (e) => { const r = wire.getBoundingClientRect(); return (e.clientX - r.left) / r.width; };
+  wire.addEventListener("pointerdown", (e) => { wire.setPointerCapture(e.pointerId); seek(at01(e)); });
+  wire.addEventListener("pointermove", (e) => { if (wire.hasPointerCapture(e.pointerId)) seek(at01(e)); });
+  wire.addEventListener("keydown", (e) => { const d = { ArrowLeft: -5, ArrowRight: 5 }[e.key]; if (d && loaded()) { el.currentTime = clamp(el.currentTime + d, 0, el.duration || TRACKS[at].dur); e.preventDefault(); } });
+
+  // The scope: the signal itself, drawn as it plays. A flat line when nothing is on.
+  let shownP = "", shownT = "";
+  toy($("#scope"), (c, w, h) => {
+    const dur = isFinite(el.duration) ? el.duration : TRACKS[at].dur, p = (el.currentTime / dur || 0).toFixed(4), tt = clock(el.currentTime);
+    if (p !== shownP) { shownP = p; wire.style.setProperty("--p", p); wire.setAttribute("aria-valuenow", Math.round(p * 100)); }
+    if (tt !== shownT) { shownT = tt; $("#m-el").textContent = tt; }
+    c.clearRect(0, 0, w, h);
+    c.lineWidth = 1; c.strokeStyle = "rgba(198, 255, 61, .09)"; c.beginPath();
+    for (let i = 1; i < 8; i++) { c.moveTo(Math.round(w * i / 8) + .5, 0); c.lineTo(Math.round(w * i / 8) + .5, h); }
+    for (let i = 1; i < 4; i++) { c.moveTo(0, Math.round(h * i / 4) + .5); c.lineTo(w, Math.round(h * i / 4) + .5); }
+    c.stroke();
+    const mid = h * 0.36, amp = h * 0.3, n = 360;
+    c.beginPath();
+    if (an && !el.paused) {
+      an.getByteTimeDomainData(wave);
+      let s = 0; for (let i = 1; i < wave.length - n * 2; i++) if (wave[i - 1] < 128 && wave[i] >= 128) { s = i; break; } // start on a rising edge so the picture holds still
+      for (let i = 0; i <= n; i++) { const y = mid - (wave[s + i * 2] - 128) / 128 * amp * 1.5; i ? c.lineTo(w * i / n, y) : c.moveTo(0, y); }
+    } else { c.moveTo(0, mid); c.lineTo(w, mid); }
+    c.lineJoin = "round"; c.strokeStyle = "#c6ff3d"; c.shadowColor = "#c6ff3d";
+    c.shadowBlur = w * 0.035; c.lineWidth = w * 0.006; c.stroke();
+    c.shadowBlur = 0; c.strokeStyle = "#f4ffd6"; c.lineWidth = w * 0.0025; c.stroke();
+  });
+  $("#mini").hidden = false; paint();
+  api.playing = () => !el.paused;
+  api.state = () => ({ at, playing: !el.paused, time: el.currentTime, scope: !!an });
   return api;
 })();
 
@@ -1055,7 +1247,7 @@ function boot() {
   };
   requestAnimationFrame(loop);
   addEventListener("resize", () => { resize(); lens(); measure(); drawn = ""; });
-  window.__rf = { anchors: () => anchors, state: () => ({ q, target, shown }), sound: Sound.on };
+  window.__rf = { anchors: () => anchors, state: () => ({ q, target, shown }), sound: Sound.on, music: Music.state };
 }
 
 document.addEventListener("visibilitychange", () => Sound.pause(document.hidden));

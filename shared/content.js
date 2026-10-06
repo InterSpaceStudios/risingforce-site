@@ -3,7 +3,7 @@ window.RF = {
   name: "RISINGFORCE",
   domain: "risingforce.se",
   place: "Sweden",
-  tagline: "Sites and games, built from scratch.",
+  tagline: "Sites, games and music, built from scratch.",
   projects: [
     {
       id: "tracker", title: "Match Tracker", theme: "tracker", kind: "Web", year: 2026, status: "LIVE",
@@ -77,6 +77,17 @@ window.RF = {
       shots: { home: "media/block-home.jpg", play: "media/block-play.jpg" },
     },
   ],
+  // The album, in the order it was made. dur is seconds (shown before the file has loaded).
+  music: {
+    artist: "RisingForce",
+    tracks: [
+      { title: "Voltage", kind: "Dubstep", bpm: 140, dur: 127, src: "media/music/voltage.mp3" },
+      { title: "Surge", kind: "Dubstep", bpm: 140, dur: 120, src: "media/music/surge.mp3" },
+      { title: "Live Wire", kind: "Drum & bass", bpm: 174, dur: 179, src: "media/music/live-wire.mp3" },
+      { title: "Blackout", kind: "Bass house", bpm: 126, dur: 217, src: "media/music/blackout.mp3" },
+      { title: "Static", kind: "Midtempo", bpm: 100, dur: 187, src: "media/music/static.mp3" },
+    ],
+  },
   // The handles from the Killer Game README. To add email: { label: "Email", value: "...", url: "mailto:..." }
   contact: [
     { label: "YouTube", value: "@RisingForce1337", url: "https://www.youtube.com/@RisingForce1337" },
