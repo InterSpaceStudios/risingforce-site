@@ -55,7 +55,11 @@
   .face { position: fixed; left: var(--l, 0); top: var(--t, 0); width: var(--w, 0); height: var(--h, 0); container-type: inline-size; display: none; background: var(--gate, #121314); transform-origin: 50% 50%; will-change: transform; overflow: hidden; }
   .face.vis { display: block; }
   .in { position: absolute; inset: 0 0 9.6% 0; background: var(--gate, #121314); padding: 6cqw 7.5cqw 3cqw; display: flex; flex-direction: column; overflow: hidden; }
-  .strip { position: absolute; left: 0; right: 0; bottom: 1.8%; height: 6%; background: repeating-linear-gradient(-45deg, var(--sa) 0 3.06cqw, var(--sb) 3.06cqw 6.12cqw); }
+  .strip { position: absolute; left: 0; right: 0; bottom: 1.8%; height: 6%; display: flex; justify-content: center; background: repeating-linear-gradient(-45deg, var(--sa) 0 3.06cqw, var(--sb) 3.06cqw 6.12cqw); }
+  /* every gate says what to do next, on its own hazard strip: scroll down */
+  .strip a { display: flex; align-items: center; gap: 3cqw; padding: 0 4.4cqw; background: var(--sa); color: var(--sb); box-shadow: 0 0 0 1.1cqw var(--sb); font: 700 6.4cqw/1 var(--cond); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+  .strip a b { position: relative; top: -.6cqw; font-size: .86em; font-weight: inherit; animation: nudge 1s ease-in-out infinite; }
+  .strip a:hover { background: var(--sb); color: var(--sa); }
   .fog { position: absolute; inset: 0; background: rgb(9, 9, 10); opacity: var(--fog, 0); pointer-events: none; }
   .top { display: flex; justify-content: space-between; color: var(--dim); font-size: calc(clamp(9px, 2.5cqw, 13px) * var(--lk, 1)); }
   .top b { color: var(--dev); font-weight: 500; }
@@ -714,7 +718,9 @@ faces.forEach((fc, k) => {
   const th = THEME[themeOf(k)];
   fc.style.setProperty("--gate", `rgb(${th.bg})`); fc.style.setProperty("--sa", th.a); fc.style.setProperty("--sb", th.b);
   fc.style.zIndex = NS - k; // a nearer gate hides the ones behind it
-  fc.insertAdjacentHTML("beforeend", '<i class="strip"></i><i class="fog"></i>');
+  // the door has its own big button; every other gate carries the cue on its strip, and the last one points back
+  const cue = k === 0 ? "" : k === NS - 1 ? '<a href="#top"><b>&uarr;</b> Back to the start <b>&uarr;</b></a>' : `<a href="#${stops[k + 1].id}"><b>&darr;</b> Scroll down <b>&darr;</b></a>`;
+  fc.insertAdjacentHTML("beforeend", `<div class="strip">${cue}</div><i class="fog"></i>`);
 });
 // Lighting: a warm bar over the approach to each gate, and every gate throws its own colour on the hall.
 for (let k = 0; k < NS; k++) {
