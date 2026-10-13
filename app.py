@@ -20,6 +20,18 @@ def index():
     response.headers['Expires'] = '0'
     return response
 
+@app.route('/wishlist')
+def wishlist():
+    # unlisted and sealed: the page only shows a lock; the wishes are AES-encrypted in shared/
+    with open(os.path.join(BASE_DIR, 'wishlist.html'), 'r', encoding='utf-8') as f:
+        html = f.read()
+    response = make_response(html)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    return response
+
 @app.route('/<folder>/<path:name>')
 def asset(folder, name):
     if folder not in PUBLIC_DIRS:
