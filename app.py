@@ -22,7 +22,7 @@ def index():
 
 @app.route('/wishlist')
 def wishlist():
-    # unlisted and sealed: the page only shows a lock; the wishes are AES-encrypted in shared/
+    # unlisted (noindex, not linked from the site); wishes come from shared/wishlist.json
     with open(os.path.join(BASE_DIR, 'wishlist.html'), 'r', encoding='utf-8') as f:
         html = f.read()
     response = make_response(html)
