@@ -1,4 +1,13 @@
 {
   "theme": "birthday",
-  "wishes": []
+  "wishes": [
+    {
+      "name": "Logitech G PRO X2 SUPERSTRIKE",
+      "price": 1999,
+      "link": "https://www.logitechg.com/sv-se/shop/p/pro-x2-superstrike-mouse.910-007777",
+      "note": "Wireless, the one with the magnetic analog clicks + rapid trigger. Black or white, either works.",
+      "want": 3,
+      "got": false
+    }
+  ]
 }
